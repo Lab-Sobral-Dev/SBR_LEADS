@@ -14,7 +14,17 @@
           hx-indicator="#spinner"
           class="flex flex-wrap items-end gap-3">
 
-        <input type="hidden" name="segmento" value="farmacia" />
+        <!-- Segmento -->
+        <div class="flex-1 min-w-[180px]">
+          <label class="block text-xs font-medium text-[#888] mb-1 uppercase tracking-wide">Segmento</label>
+          <select name="segmento"
+                  class="w-full rounded-lg bg-[#222] border border-[#3a3a3a] px-3 py-2 text-sm text-[#e5e5e5] focus:outline-none focus:border-orange-500 transition-colors">
+            <option value="">Todos os segmentos</option>
+            {% for atalho in atalhos %}
+            <option value="{{ atalho.segmento }}">{{ atalho.descricao }}</option>
+            {% endfor %}
+          </select>
+        </div>
 
         <!-- Estado -->
         <div class="flex-1 min-w-[150px]">

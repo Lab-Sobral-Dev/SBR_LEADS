@@ -10,6 +10,7 @@ from openpyxl.styles import Font
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from auth import require_login
 from database import get_db
 from schemas import AtalhosCnae, BuscarRequest, BuscarResponse, Cnae, Lead, Municipio, Stats, UF
 from service import ATALHOS, PORTES, SELECT_LEADS, build_where, contar, resolve_cnaes, row_to_lead, buscar
@@ -89,7 +90,7 @@ def _stream_csv(req: BuscarRequest, db: Session) -> Iterator[bytes]:
 # ---------------------------------------------------------------------------
 
 @router.get("/ufs", response_model=list[UF])
-def listar_ufs():
+def listar_ufs(_: dict = Depends(require_login)):
     return [UF(sigla=s, nome=n) for s, n in _UFS]
 
 
@@ -98,6 +99,7 @@ def listar_municipios(
     uf: str | None = Query(None, description="Filtrar por UF"),
     q: str | None = Query(None, description="Busca parcial pelo nome"),
     db: Session = Depends(get_db),
+    _: dict = Depends(require_login),
 ):
     sql = """
         SELECT DISTINCT m.codigo, m.descricao
@@ -119,6 +121,7 @@ def listar_municipios(
 def buscar_cnaes(
     q: str = Query(..., description="Texto para busca na descrição do CNAE"),
     db: Session = Depends(get_db),
+    _: dict = Depends(require_login),
 ):
     rows = db.execute(
         text("SELECT codigo, descricao FROM cnae WHERE descricao ILIKE :q ORDER BY descricao LIMIT 30"),
@@ -128,7 +131,7 @@ def buscar_cnaes(
 
 
 @router.get("/cnaes/atalhos", response_model=list[AtalhosCnae])
-def listar_atalhos():
+def listar_atalhos(_: dict = Depends(require_login)):
     return [AtalhosCnae(**a) for a in ATALHOS]
 
 
@@ -137,12 +140,12 @@ def listar_atalhos():
 # ---------------------------------------------------------------------------
 
 @router.post("/buscar", response_model=BuscarResponse)
-def buscar_leads(req: BuscarRequest, db: Session = Depends(get_db)):
+def buscar_leads(req: BuscarRequest, db: Session = Depends(get_db), _: dict = Depends(require_login)):
     return buscar(req, db)
 
 
 @router.post("/exportar.csv")
-def exportar_csv(req: BuscarRequest, db: Session = Depends(get_db)):
+def exportar_csv(req: BuscarRequest, db: Session = Depends(get_db), _: dict = Depends(require_login)):
     total = contar(req, db)
     return StreamingResponse(
         _stream_csv(req, db),
@@ -156,7 +159,7 @@ def exportar_csv(req: BuscarRequest, db: Session = Depends(get_db)):
 
 
 @router.post("/exportar.xlsx")
-def exportar_xlsx(req: BuscarRequest, db: Session = Depends(get_db)):
+def exportar_xlsx(req: BuscarRequest, db: Session = Depends(get_db), _: dict = Depends(require_login)):
     cnaes = resolve_cnaes(req)
     where, params = build_where(req, cnaes)
     total = contar(req, db)
@@ -202,7 +205,7 @@ def exportar_xlsx(req: BuscarRequest, db: Session = Depends(get_db)):
 # ---------------------------------------------------------------------------
 
 @router.get("/stats", response_model=Stats)
-def estatisticas(db: Session = Depends(get_db)):
+def estatisticas(db: Session = Depends(get_db), _: dict = Depends(require_login)):
     total_estab = db.execute(text("SELECT COUNT(*) FROM estabelecimento")).scalar() or 0
     total_emp = db.execute(text("SELECT COUNT(*) FROM empresa")).scalar() or 0
 

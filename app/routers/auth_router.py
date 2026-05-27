@@ -12,6 +12,7 @@ from auth import (
     require_login_raw,
     verificar_senha,
 )
+from config import settings
 from database import get_db
 
 templates = Jinja2Templates(directory="templates")
@@ -52,6 +53,7 @@ def fazer_login(
         token,
         httponly=True,
         samesite="lax",
+        secure=settings.app_env == "production",
         max_age=TOKEN_EXPIRE_HOURS * 3600,
     )
     return response

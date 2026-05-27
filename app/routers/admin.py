@@ -1,14 +1,11 @@
-from datetime import timezone, timedelta
-
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-BRT = timezone(timedelta(hours=-3))
-
 from auth import hash_senha, require_admin
+from config import BRT
 from database import get_db
 
 templates = Jinja2Templates(directory="templates")
@@ -57,6 +54,15 @@ def criar_usuario(
     current_user: dict = Depends(require_admin),
     db: Session = Depends(get_db),
 ):
+    if role not in ("admin", "user"):
+        return templates.TemplateResponse("admin/usuarios.html", {
+            "request": request,
+            "user": current_user,
+            "usuarios": _listar_usuarios(db),
+            "erro": "Role inválido. Use 'admin' ou 'user'.",
+            "mensagem": None,
+        })
+
     email = email.lower().strip()
     existente = db.execute(
         text("SELECT id FROM usuario WHERE email = :email"), {"email": email}
@@ -143,8 +149,17 @@ def resetar_senha(
     current_user: dict = Depends(require_admin),
     db: Session = Depends(get_db),
 ):
+    if len(nova_senha) < 6:
+        return templates.TemplateResponse("admin/usuarios.html", {
+            "request": request,
+            "user": current_user,
+            "usuarios": _listar_usuarios(db),
+            "erro": "A senha deve ter pelo menos 6 caracteres.",
+            "mensagem": None,
+        })
+
     db.execute(
-        text("UPDATE usuario SET senha_hash = :hash WHERE id = :id"),
+        text("UPDATE usuario SET senha_hash = :hash, trocar_senha = true WHERE id = :id"),
         {"hash": hash_senha(nova_senha), "id": user_id},
     )
     db.commit()
@@ -153,6 +168,6 @@ def resetar_senha(
         "request": request,
         "user": current_user,
         "usuarios": _listar_usuarios(db),
-        "mensagem": "Senha alterada com sucesso.",
+        "mensagem": "Senha alterada com sucesso. O usuário deverá trocá-la no próximo acesso.",
         "erro": None,
     })

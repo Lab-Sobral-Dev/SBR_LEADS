@@ -10,15 +10,13 @@ Apenas operações de leitura (GET) são executadas — nunca POST/PUT/DELETE.
 import logging
 import re
 import time
-from datetime import datetime, timezone, timedelta
-
-BRT = timezone(timedelta(hours=-3))
+from datetime import datetime, timezone
 
 import requests
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from config import settings
+from config import BRT, settings
 
 logger = logging.getLogger(__name__)
 

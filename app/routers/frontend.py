@@ -10,12 +10,12 @@ from sqlalchemy.orm import Session
 
 from auth import require_login
 from database import get_db, SessionLocal
+from pedido_mobile import SyncError, sincronizar, sync_em_andamento, total_clientes, ultima_sync
 from routers.api import _UFS
-from schemas import BuscarRequest, Stats, UF, Municipio, Cnae
+from schemas import BuscarRequest, Cnae, Municipio, Stats, UF
 from service import ATALHOS, buscar, buscar_para_mapa
 
 LIMITE_MAPA = 5000
-from pedido_mobile import sincronizar, ultima_sync, total_clientes, SyncError, sync_em_andamento
 
 logger = logging.getLogger(__name__)
 
@@ -180,29 +180,8 @@ async def buscar_html(
     db: Session = Depends(get_db),
 ):
     form = await request.form()
-
-    uf = form.get("uf") or None
-    municipio_codigo = form.get("municipio_codigo") or None
-    segmento = form.get("segmento") or None
-    cnaes_raw = form.get("cnaes") or ""
-    cnaes_lista = [c.strip() for c in cnaes_raw.split(",") if c.strip()] if cnaes_raw else None
-    apenas_ativas = form.get("apenas_ativas") == "true"
-    porte = form.get("porte") or None
-    status_cliente = form.get("status_cliente") or None
     page = int(form.get("page") or 1)
-    page_size = 50
-
-    req = BuscarRequest(
-        uf=uf,
-        municipio_codigo=municipio_codigo,
-        segmento=segmento,
-        cnaes=cnaes_lista,
-        apenas_ativas=apenas_ativas,
-        porte=porte,
-        status_cliente=status_cliente,
-        page=page,
-        page_size=page_size,
-    )
+    req = _form_to_req(form, page=page, page_size=50)
 
     resultado = buscar(req, db)
 
@@ -286,7 +265,7 @@ async def exportar_xlsx_form(
     return exportar_xlsx(req, db)
 
 
-def _form_to_req(form) -> BuscarRequest:
+def _form_to_req(form, *, page: int = 1, page_size: int = 50) -> BuscarRequest:
     cnaes_raw = form.get("cnaes") or ""
     return BuscarRequest(
         uf=form.get("uf") or None,
@@ -296,6 +275,6 @@ def _form_to_req(form) -> BuscarRequest:
         apenas_ativas=form.get("apenas_ativas") == "true",
         porte=form.get("porte") or None,
         status_cliente=form.get("status_cliente") or None,
-        page=1,
-        page_size=200,
+        page=page,
+        page_size=page_size,
     )
