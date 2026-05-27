@@ -18,7 +18,32 @@
       <span class="text-[#888] text-sm"> resultado{{ 's' if resultado.total != 1 else '' }} encontrado{{ 's' if resultado.total != 1 else '' }}</span>
       <span class="text-[#555] text-xs ml-2">— página {{ resultado.page }} de {{ resultado.pages }}</span>
     </div>
-    <div class="flex gap-2">
+    <div class="flex items-center gap-3 flex-wrap">
+      <!-- Ordenação -->
+      <div class="flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5 text-[#555]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/>
+        </svg>
+        <select name="ordenar"
+                hx-post="/buscar"
+                hx-target="#resultado"
+                hx-swap="innerHTML show:#resultado:top"
+                hx-include="#filtros"
+                hx-trigger="change"
+                hx-indicator="#spinner"
+                class="text-xs rounded-lg bg-[#222] border border-[#3a3a3a] px-2 py-1.5 text-[#ccc] focus:outline-none focus:border-orange-500 transition-colors cursor-pointer">
+          <option value="razao_social_asc"    {% if ordenar_atual == 'razao_social_asc'    %}selected{% endif %}>Nome (A → Z)</option>
+          <option value="razao_social_desc"   {% if ordenar_atual == 'razao_social_desc'   %}selected{% endif %}>Nome (Z → A)</option>
+          <option value="capital_desc"        {% if ordenar_atual == 'capital_desc'        %}selected{% endif %}>Maior capital social</option>
+          <option value="capital_asc"         {% if ordenar_atual == 'capital_asc'         %}selected{% endif %}>Menor capital social</option>
+          <option value="ultima_compra_desc"  {% if ordenar_atual == 'ultima_compra_desc'  %}selected{% endif %}>Última compra (recente)</option>
+          <option value="ultima_compra_asc"   {% if ordenar_atual == 'ultima_compra_asc'   %}selected{% endif %}>Última compra (antiga)</option>
+          <option value="clientes_primeiro"   {% if ordenar_atual == 'clientes_primeiro'   %}selected{% endif %}>Clientes primeiro</option>
+          <option value="prospectos_primeiro" {% if ordenar_atual == 'prospectos_primeiro' %}selected{% endif %}>Prospectos primeiro</option>
+        </select>
+      </div>
+      <div class="flex gap-2">
       <button onclick="exportar('csv')"
               class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-[#3a3a3a] text-[#aaa] hover:border-orange-500 hover:text-orange-500 transition-colors">
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -35,6 +60,7 @@
         </svg>
         Excel
       </button>
+    </div>
     </div>
   </div>
 </div>
@@ -288,7 +314,7 @@ function _esc(s) {
 }
 
 function _icone(ehCliente) {
-  const cor = ehCliente ? '#f97316' : '#6b6b6b';
+  const cor = ehCliente ? '#f97316' : '#a855f7';
   const html = `<div style="background:${cor};width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 4px rgba(0,0,0,.6)"></div>`;
   return L.divIcon({
     html, className: 'pm-marker',

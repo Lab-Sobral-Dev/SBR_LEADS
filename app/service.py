@@ -75,6 +75,23 @@ SELECT_LEADS = f"""
 
 _COUNT_SQL = f"SELECT COUNT(*) {_FROM_LEADS} WHERE {{where}}"
 
+ORDENACOES: dict[str, str] = {
+    "razao_social_asc":    "emp.razao_social ASC",
+    "razao_social_desc":   "emp.razao_social DESC",
+    "capital_desc":        "emp.capital_social DESC NULLS LAST",
+    "capital_asc":         "emp.capital_social ASC NULLS LAST",
+    "ultima_compra_desc":  "pm.ultima_compra_em DESC NULLS LAST",
+    "ultima_compra_asc":   "pm.ultima_compra_em ASC NULLS LAST",
+    "clientes_primeiro":   "(pm.documento IS NOT NULL) DESC, emp.razao_social ASC",
+    "prospectos_primeiro": "(pm.documento IS NULL) DESC, emp.razao_social ASC",
+}
+
+_ORDENACAO_PADRAO = "emp.razao_social ASC"
+
+
+def build_order_by(req: BuscarRequest) -> str:
+    return ORDENACOES.get(req.ordenar or "", _ORDENACAO_PADRAO)
+
 _STATS_FILTRO_SQL = f"""
     SELECT
         COUNT(DISTINCT e.cnpj_basico)                                   AS empresas,
@@ -170,7 +187,7 @@ def buscar(req: BuscarRequest, db: Session) -> BuscarResponse:
     offset = (page - 1) * page_size
 
     rows = db.execute(
-        text(f"{SELECT_LEADS} WHERE {where} ORDER BY emp.razao_social LIMIT :limit OFFSET :offset"),
+        text(f"{SELECT_LEADS} WHERE {where} ORDER BY {build_order_by(req)} LIMIT :limit OFFSET :offset"),
         {**params, "limit": page_size, "offset": offset},
     ).fetchall()
 
@@ -213,7 +230,7 @@ def buscar_para_mapa(req: BuscarRequest, db: Session, limite: int = 5000) -> lis
     cnaes = resolve_cnaes(req)
     where, params = build_where(req, cnaes)
     rows = db.execute(
-        text(f"{SELECT_LEADS} WHERE {where} ORDER BY emp.razao_social LIMIT :limit"),
+        text(f"{SELECT_LEADS} WHERE {where} ORDER BY {build_order_by(req)} LIMIT :limit"),
         {**params, "limit": limite},
     ).fetchall()
     return [row_to_lead(r) for r in rows]

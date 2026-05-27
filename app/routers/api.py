@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 from auth import require_login
 from database import get_db
 from schemas import AtalhosCnae, BuscarRequest, BuscarResponse, Cnae, Lead, Municipio, Stats, UF
-from service import ATALHOS, PORTES, SELECT_LEADS, build_where, contar, resolve_cnaes, row_to_lead, buscar
+from service import ATALHOS, PORTES, SELECT_LEADS, build_order_by, build_where, buscar, contar, resolve_cnaes, row_to_lead
 
 LIMITE_EXPORTACAO = 50_000
 
@@ -74,7 +74,7 @@ def _stream_csv(req: BuscarRequest, db: Session) -> Iterator[bytes]:
 
     result = _execute_streaming(
         db,
-        f"{SELECT_LEADS} WHERE {where} ORDER BY emp.razao_social LIMIT :limit",
+        f"{SELECT_LEADS} WHERE {where} ORDER BY {build_order_by(req)} LIMIT :limit",
         {**params, "limit": LIMITE_EXPORTACAO},
     )
     for row in result:
@@ -179,7 +179,7 @@ def exportar_xlsx(req: BuscarRequest, db: Session = Depends(get_db), _: dict = D
 
     result = _execute_streaming(
         db,
-        f"{SELECT_LEADS} WHERE {where} ORDER BY emp.razao_social LIMIT :limit",
+        f"{SELECT_LEADS} WHERE {where} ORDER BY {build_order_by(req)} LIMIT :limit",
         {**params, "limit": LIMITE_EXPORTACAO},
     )
     for row in result:

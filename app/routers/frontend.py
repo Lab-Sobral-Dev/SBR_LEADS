@@ -236,6 +236,7 @@ async def buscar_html(
         "request": request,
         "resultado": resultado,
         "stats_filtro": stats_filtro,
+        "ordenar_atual": req.ordenar,
         "leads_json": leads_json,
         "pagina_json": pagina_json,
         "total_no_mapa": len(leads_mapa),
@@ -277,6 +278,7 @@ def _form_to_req(form, *, page: int = 1, page_size: int = 50) -> BuscarRequest:
         apenas_ativas=form.get("apenas_ativas") == "true",
         porte=form.get("porte") or None,
         status_cliente=form.get("status_cliente") or None,
+        ordenar=form.get("ordenar") or "razao_social_asc",
         page=page,
         page_size=page_size,
     )

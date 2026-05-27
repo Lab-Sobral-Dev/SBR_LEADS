@@ -34,6 +34,7 @@ class BuscarRequest(BaseModel):
     status_cliente: str | None = None  # None=todos, "cliente", "prospect"
     page: int = 1
     page_size: int = 50
+    ordenar: str = "razao_social_asc"
 
 
 class Lead(BaseModel):
