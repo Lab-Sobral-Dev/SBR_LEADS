@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}SBR Leads{% endblock %}</title>
+  {% block head_extra %}{% endblock %}
 
   <!-- Tailwind CDN: gera CSS dinamicamente, não suporta SRI -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -111,13 +112,18 @@
 
   <header class="sticky top-0 z-30 bg-[#0f0f0f] border-b border-[#2e2e2e]">
     <div class="max-w-7xl mx-auto px-5 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-2">
+      <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
         <span class="text-orange-500 font-black text-lg tracking-tight">SBR</span>
         <span class="text-white font-light text-lg tracking-widest">Leads</span>
-      </div>
+      </a>
       {% if user is defined and user %}
       <div class="flex items-center gap-4">
-        <span class="text-sm text-[#888]">{{ user.nome }}</span>
+        <a href="/"
+           class="text-sm text-[#666] hover:text-[#ccc] transition-colors">Busca</a>
+        <a href="/dashboard"
+           class="text-sm text-[#666] hover:text-orange-500 transition-colors">Dashboards</a>
+        <span class="text-[#333]">|</span>
+        <span class="text-sm text-[#555]">{{ user.nome }}</span>
         {% if user.role == 'admin' %}
         <a href="/admin/usuarios"
            class="text-xs text-orange-500 hover:text-orange-400 transition-colors">Admin</a>

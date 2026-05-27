@@ -12,6 +12,7 @@ from database import engine
 from routers.admin import router as admin_router
 from routers.api import router as api_router
 from routers.auth_router import router as auth_router
+from routers.dashboard import router as dashboard_router
 from routers.frontend import router as frontend_router
 
 
@@ -166,6 +167,7 @@ async def trocar_senha_handler(request: Request, exc: TrocarSenhaException):
 app.include_router(auth_router)
 app.include_router(admin_router)
 app.include_router(api_router)
+app.include_router(dashboard_router)
 app.include_router(frontend_router)
 
 

@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+
+{% block head_extra %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block title %}Dashboard Comercial{% endblock %}
+
+{% block content %}
+<script>const d = {{ dados_json | safe }};</script>
+
+<div class="space-y-5 p-5">
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+
+    <div class="bg-[#171717] rounded-xl border border-[#2e2e2e] p-4">
+      <div class="text-2xl font-bold text-white" id="kpi-clientes"></div>
+      <div class="text-xs text-blue-400 mt-1">Clientes ativos</div>
+    </div>
+
+    <div class="bg-[#171717] rounded-xl border border-[#2e2e2e] p-4">
+      <div class="text-2xl font-bold text-[#f97316]" id="kpi-receita-total"></div>
+      <div class="text-xs text-[#888] mt-1">Receita total</div>
+    </div>
+
+    <div class="bg-[#171717] rounded-xl border border-[#2e2e2e] p-4">
+      <div class="flex items-end gap-2">
+        <div class="text-2xl font-bold text-white" id="kpi-receita-mes"></div>
+        <span id="kpi-variacao" class="text-xs font-semibold px-1.5 py-0.5 rounded mb-0.5"></span>
+      </div>
+      <div class="text-xs text-[#888] mt-1">Faturamento do mes</div>
+    </div>
+
+    <div class="bg-[#171717] rounded-xl border border-[#2e2e2e] p-4">
+      <div class="text-2xl font-bold text-white" id="kpi-ticket"></div>
+      <div class="text-xs text-[#888] mt-1">Ticket medio</div>
+    </div>
+
+    <div class="bg-[#171717] rounded-xl border border-[#2e2e2e] p-4">
+      <div class="text-2xl font-bold text-white" id="kpi-pedidos"></div>
+      <div class="text-xs text-[#888] mt-1">Pedidos este mes</div>
+    </div>
+
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+
+    <div class="lg:col-span-3 bg-[#171717] rounded-xl border border-[#2e2e2e]">
+      <div class="text-sm font-semibold text-white px-5 py-3 border-b border-[#2e2e2e]">Faturamento Mensal</div>
+      <div class="p-4 h-72">
+        <canvas id="chartFaturamento" class="w-full h-full"></canvas>
+      </div>
+    </div>
+
+    <div class="lg:col-span-2 bg-[#171717] rounded-xl border border-[#2e2e2e]">
+      <div class="text-sm font-semibold text-white px-5 py-3 border-b border-[#2e2e2e]">Desempenho por Vendedor</div>
+      <div class="p-4 h-72">
+        <canvas id="chartVendedores" class="w-full h-full"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+    <div class="bg-[#171717] rounded-xl border border-[#2e2e2e]">
+      <div class="text-sm font-semibold text-white px-5 py-3 border-b border-[#2e2e2e]">Top 10 Produtos</div>
+      <div class="p-0 overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-[#111]">
+            <tr>
+              <th class="px-4 py-2.5 text-left text-[10px] font-semibold text-[#666] uppercase tracking-wide">Produto</th>
+              <th class="px-4 py-2.5 text-right text-[10px] font-semibold text-[#666] uppercase tracking-wide">Receita</th>
+              <th class="px-4 py-2.5 text-right text-[10px] font-semibold text-[#666] uppercase tracking-wide">Clientes</th>
+              <th class="px-4 py-2.5 text-right text-[10px] font-semibold text-[#666] uppercase tracking-wide">Pedidos</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#222]">
+            {% set produtos = dados.top_produtos[:10] %}
+            {% set max_receita_prod = produtos | map(attribute='receita') | max %}
+            {% for p in produtos %}
+            <tr class="hover:bg-[#1a1a1a]">
+              <td class="px-4 py-2.5">
+                <div class="text-xs text-[#aaa] truncate max-w-[220px]">{{ p.descricao }}</div>
+                <div class="mt-0.5 h-0.5 bg-[#222] rounded-full overflow-hidden w-full max-w-[220px]">
+                  <div class="h-full bg-orange-500/60 rounded-full" style="width: {{ ((p.receita / max_receita_prod) * 100) | round(1) }}%"></div>
+                </div>
+              </td>
+              <td class="px-4 py-2.5 text-right text-[#ccc] whitespace-nowrap">R$ {{ "{:,.0f}".format(p.receita).replace(",", ".") }}</td>
+              <td class="px-4 py-2.5 text-right text-[#ccc]">{{ p.clientes }}</td>
+              <td class="px-4 py-2.5 text-right text-[#ccc]">{{ p.pedidos }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="bg-[#171717] rounded-xl border border-[#2e2e2e]">
+      <div class="text-sm font-semibold text-white px-5 py-3 border-b border-[#2e2e2e]">Top 10 Clientes</div>
+      <div class="p-0 overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-[#111]">
+            <tr>
+              <th class="px-4 py-2.5 text-left text-[10px] font-semibold text-[#666] uppercase tracking-wide">Cliente</th>
+              <th class="px-4 py-2.5 text-left text-[10px] font-semibold text-[#666] uppercase tracking-wide">Vendedor</th>
+              <th class="px-4 py-2.5 text-right text-[10px] font-semibold text-[#666] uppercase tracking-wide">Receita</th>
+              <th class="px-4 py-2.5 text-right text-[10px] font-semibold text-[#666] uppercase tracking-wide">Pedidos</th>
+              <th class="px-4 py-2.5 text-right text-[10px] font-semibold text-[#666] uppercase tracking-wide">Ultima compra</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#222]">
+            {% set clientes = dados.top_clientes[:10] %}
+            {% for c in clientes %}
+            <tr class="hover:bg-[#1a1a1a]">
+              <td class="px-4 py-2.5 text-[#ccc] truncate max-w-[160px]">{{ c.nome }}</td>
+              <td class="px-4 py-2.5 text-[#888] text-xs truncate max-w-[120px]">{{ c.vendedor }}</td>
+              <td class="px-4 py-2.5 text-right text-[#ccc] whitespace-nowrap">R$ {{ "{:,.0f}".format(c.receita).replace(",", ".") }}</td>
+              <td class="px-4 py-2.5 text-right text-[#ccc]">{{ c.pedidos }}</td>
+              <td class="px-4 py-2.5 text-right text-[#888] text-xs">{{ c.ultima_compra }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bg-[#171717] rounded-xl border border-[#2e2e2e]">
+    <div class="text-sm font-semibold text-white px-5 py-3 border-b border-[#2e2e2e] flex items-center gap-3 flex-wrap">
+      <span>Clientes em Risco</span>
+      {% set rc = dados.risco_counts %}
+      <span class="text-xs font-medium px-2 py-0.5 rounded bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">{{ rc.leve }} leve (30–60d)</span>
+      <span class="text-xs font-medium px-2 py-0.5 rounded bg-orange-500/10 text-orange-400 border border-orange-500/20">{{ rc.medio }} medio (61–90d)</span>
+      <span class="text-xs font-medium px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20">{{ rc.alto }} alto (+90d)</span>
+    </div>
+    <div class="p-0 overflow-hidden">
+      <table class="w-full text-sm">
+        <thead class="bg-[#111]">
+          <tr>
+            <th class="px-4 py-2.5 text-left text-[10px] font-semibold text-[#666] uppercase tracking-wide">Cliente</th>
+            <th class="px-4 py-2.5 text-left text-[10px] font-semibold text-[#666] uppercase tracking-wide">Vendedor</th>
+            <th class="px-4 py-2.5 text-right text-[10px] font-semibold text-[#666] uppercase tracking-wide">Ultima compra</th>
+            <th class="px-4 py-2.5 text-right text-[10px] font-semibold text-[#666] uppercase tracking-wide">Dias sem comprar</th>
+            <th class="px-4 py-2.5 text-right text-[10px] font-semibold text-[#666] uppercase tracking-wide">Pedidos</th>
+            <th class="px-4 py-2.5 text-right text-[10px] font-semibold text-[#666] uppercase tracking-wide">Receita historica</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-[#222]">
+          {% set risco = dados.clientes_risco %}
+          {% for r in risco %}
+          {% if r.dias <= 60 %}
+          <tr class="bg-yellow-500/5 border-l-2 border-yellow-500/30 hover:bg-yellow-500/10">
+          {% elif r.dias <= 90 %}
+          <tr class="bg-orange-500/5 border-l-2 border-orange-500/40 hover:bg-orange-500/10">
+          {% else %}
+          <tr class="bg-red-500/5 border-l-2 border-red-500/40 hover:bg-red-500/10">
+          {% endif %}
+            <td class="px-4 py-2.5 text-[#ccc]">{{ r.nome }}</td>
+            <td class="px-4 py-2.5 text-[#888] text-xs">{{ r.vendedor }}</td>
+            <td class="px-4 py-2.5 text-right text-[#888] text-xs">{{ r.ultima_compra }}</td>
+            <td class="px-4 py-2.5 text-right">
+              {% if r.dias <= 60 %}
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-yellow-500/15 text-yellow-400">{{ r.dias }}d</span>
+              {% elif r.dias <= 90 %}
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-orange-500/15 text-orange-400">{{ r.dias }}d</span>
+              {% else %}
+              <span class="text-xs font-semibold px-2 py-0.5 rounded bg-red-500/15 text-red-400">{{ r.dias }}d</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-2.5 text-right text-[#ccc]">{{ r.pedidos }}</td>
+            <td class="px-4 py-2.5 text-right text-[#ccc] whitespace-nowrap">R$ {{ "{:,.0f}".format(r.receita).replace(",", ".") }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function fmtBRL(v) {
+  return 'R$ ' + Number(v).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+function fmtNum(v) {
+  return Math.round(v).toLocaleString('pt-BR');
+}
+
+Chart.defaults.color = '#888';
+Chart.defaults.borderColor = '#2e2e2e';
+Chart.defaults.font.family = 'system-ui,sans-serif';
+Chart.defaults.font.size = 11;
+
+document.getElementById('kpi-clientes').textContent = fmtNum(d.kpis.clientes_ativos);
+document.getElementById('kpi-receita-total').textContent = fmtBRL(d.kpis.receita_total);
+document.getElementById('kpi-receita-mes').textContent = fmtBRL(d.kpis.receita_mes);
+document.getElementById('kpi-ticket').textContent = fmtBRL(d.kpis.ticket_medio);
+document.getElementById('kpi-pedidos').textContent = fmtNum(d.kpis.pedidos_mes);
+
+const varEl = document.getElementById('kpi-variacao');
+const vPct = d.kpis.variacao_pct;
+if (vPct !== null && vPct !== undefined) {
+  const sign = vPct >= 0 ? '+' : '';
+  varEl.textContent = sign + Number(vPct).toFixed(1) + '%';
+  varEl.className = vPct > 0
+    ? 'text-xs font-semibold px-1.5 py-0.5 rounded mb-0.5 bg-green-500/15 text-green-400'
+    : 'text-xs font-semibold px-1.5 py-0.5 rounded mb-0.5 bg-red-500/15 text-red-400';
+}
+
+const fat = d.faturamento.slice(-12);
+new Chart(document.getElementById('chartFaturamento'), {
+  data: {
+    labels: fat.map(r => r.mes),
+    datasets: [
+      {
+        type: 'bar',
+        label: 'Receita',
+        data: fat.map(r => r.receita),
+        backgroundColor: 'rgba(249,115,22,0.75)',
+        borderRadius: 4,
+        yAxisID: 'y'
+      },
+      {
+        type: 'line',
+        label: 'Pedidos',
+        data: fat.map(r => r.pedidos),
+        borderColor: '#f97316',
+        backgroundColor: 'transparent',
+        tension: 0.3,
+        pointRadius: 3,
+        yAxisID: 'y2'
+      }
+    ]
+  },
+  options: {
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        mode: 'index',
+        callbacks: {
+          label: function(ctx) {
+            if (ctx.datasetIndex === 0) return ' ' + fmtBRL(ctx.raw);
+            return ' ' + fmtNum(ctx.raw) + ' pedidos';
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        grid: { color: '#1e1e1e' },
+        ticks: {
+          callback: function(v) { return 'R$' + fmtNum(v); }
+        }
+      },
+      y2: {
+        position: 'right',
+        grid: { display: false },
+        ticks: {
+          callback: function(v) { return fmtNum(v); }
+        }
+      },
+      x: {
+        grid: { color: '#1e1e1e' }
+      }
+    }
+  }
+});
+
+const vendSorted = [...d.vendedores].sort((a, b) => b.receita - a.receita);
+new Chart(document.getElementById('chartVendedores'), {
+  type: 'bar',
+  data: {
+    labels: vendSorted.map(v => v.vendedor.length > 20 ? v.vendedor.slice(0, 20) + '…' : v.vendedor),
+    datasets: [
+      {
+        label: 'Receita',
+        data: vendSorted.map(v => v.receita),
+        backgroundColor: vendSorted.map((_, i) => i === 0 ? '#f97316' : 'rgba(249,115,22,0.55)'),
+        borderRadius: 4
+      }
+    ]
+  },
+  options: {
+    indexAxis: 'y',
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function(ctx) {
+            const v = vendSorted[ctx.dataIndex];
+            return ' ' + fmtBRL(v.receita) + ' · ' + fmtNum(v.pedidos) + ' pedidos · ' + fmtNum(v.clientes) + ' clientes';
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: '#1e1e1e' },
+        ticks: {
+          callback: function(v) { return 'R$' + fmtNum(v); }
+        }
+      },
+      y: {
+        grid: { display: false }
+      }
+    }
+  }
+});
+</script>
+{% endblock %}
