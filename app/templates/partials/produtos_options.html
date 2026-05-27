@@ -1,8 +1,20 @@
+{% if titulo %}
+<div class="px-2 pt-1.5 pb-0.5 text-[10px] font-semibold text-[#555] uppercase tracking-wider">{{ titulo }}</div>
+{% endif %}
+{% if not produtos %}
+<div class="px-2 py-2 text-xs text-[#555] text-center">Nenhum produto encontrado</div>
+{% endif %}
 {% for p in produtos %}
 <button type="button"
+        data-codigo="{{ p.codigo }}"
         onclick="selecionarProduto('{{ p.codigo | replace("'", "\\'") }}', '{{ p.descricao | replace("'", "\\'") }}')"
-        class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-[#2e2e2e] hover:text-orange-500 border border-transparent hover:border-[#3a3a3a] transition-colors truncate">
-  <span class="font-mono text-[#555]">{{ p.codigo }}</span>
-  <span class="ml-1 text-[#aaa]">{{ p.descricao }}</span>
+        class="produto-option w-full text-left text-xs px-2.5 py-2 rounded-lg flex items-center gap-2 hover:bg-[#2e2e2e] transition-colors group">
+  <svg class="produto-check w-3.5 h-3.5 flex-shrink-0 text-orange-500 opacity-0" fill="currentColor" viewBox="0 0 20 20">
+    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+  </svg>
+  <span class="flex-1 min-w-0">
+    <span class="text-[#ccc] group-hover:text-white truncate block">{{ p.descricao }}</span>
+    <span class="text-[#555] font-mono">{{ p.codigo }}</span>
+  </span>
 </button>
 {% endfor %}

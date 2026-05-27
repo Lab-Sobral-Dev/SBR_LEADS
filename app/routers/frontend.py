@@ -161,22 +161,41 @@ def produtos_options(
     current_user: dict = Depends(require_login),
     db: Session = Depends(get_db),
 ):
-    produtos = []
     if q.strip():
         rows = db.execute(
             text("""
-                SELECT DISTINCT ON (produto_codigo) produto_codigo, produto_descricao
+                SELECT produto_codigo,
+                       MAX(produto_descricao) AS produto_descricao,
+                       COUNT(*) AS total
                 FROM pedido_mobile_item
-                WHERE produto_descricao ILIKE :q OR produto_codigo ILIKE :q
-                ORDER BY produto_codigo, produto_descricao
-                LIMIT 10
+                WHERE produto_codigo IS NOT NULL
+                  AND (produto_descricao ILIKE :q OR produto_codigo ILIKE :q)
+                GROUP BY produto_codigo
+                ORDER BY total DESC
+                LIMIT 12
             """),
             {"q": f"%{q}%"},
         ).fetchall()
-        produtos = [{"codigo": r.produto_codigo, "descricao": r.produto_descricao} for r in rows]
+        titulo = None
+    else:
+        rows = db.execute(
+            text("""
+                SELECT produto_codigo,
+                       MAX(produto_descricao) AS produto_descricao,
+                       COUNT(*) AS total
+                FROM pedido_mobile_item
+                WHERE produto_codigo IS NOT NULL AND produto_descricao IS NOT NULL
+                GROUP BY produto_codigo
+                ORDER BY total DESC
+                LIMIT 15
+            """),
+        ).fetchall()
+        titulo = "Mais pedidos"
+    produtos = [{"codigo": r.produto_codigo, "descricao": r.produto_descricao} for r in rows]
     return templates.TemplateResponse("partials/produtos_options.html", {
         "request": request,
         "produtos": produtos,
+        "titulo": titulo,
     })
 
 
