@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Dashboards{% endblock %}
+{% block content %}
+<div class="max-w-5xl">
+  <h1 class="text-xl font-bold text-white">Dashboards</h1>
+  <p class="text-[#888] text-sm mt-1 mb-5">Escolha um painel para abrir.</p>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <a href="/dashboard" class="bg-[#171717] border border-[#2e2e2e] rounded-xl p-5 hover:border-orange-500 hover:-translate-y-0.5 transition-all group">
+      <div class="text-2xl">🏆</div>
+      <div class="text-white font-semibold mt-2 group-hover:text-orange-500">Cockpit do Gestor</div>
+      <div class="text-[#888] text-xs mt-1 leading-relaxed">Ranking de vendedores, KPIs comparados, clientes em risco e concentração da carteira.</div>
+      <span class="inline-block mt-3 text-[9px] px-2 py-0.5 rounded-full bg-green-500/12 text-green-400">Disponível</span>
+    </a>
+
+    <div class="bg-[#171717] border border-[#2e2e2e] rounded-xl p-5 opacity-60 cursor-not-allowed">
+      <div class="text-2xl">📈</div>
+      <div class="text-white font-semibold mt-2">Análise de Vendas</div>
+      <div class="text-[#888] text-xs mt-1 leading-relaxed">Curva ABC de produtos, representadas, mix e sazonalidade.</div>
+      <span class="inline-block mt-3 text-[9px] px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400">Em breve</span>
+    </div>
+  </div>
+</div>
+{% endblock %}
