@@ -350,6 +350,36 @@ def sincronizar(db: Session) -> dict:
                 break
             page += 1
 
+        # Sincroniza pedidos/itens dentro do mesmo bloco protegido: se esta
+        # fase falhar, o sync é marcado com erro (e não como concluído).
+        # As páginas já commitadas são preservadas — como o UPSERT é idempotente
+        # e a versão só é salva no fim, a próxima execução reprocessa do início
+        # sem duplicar dados.
+        logger.info("Sincronizando datas de última compra via pedidointegracao...")
+        _sincronizar_pedidos(db)
+
+        db.execute(
+            text("""
+                UPDATE pedido_mobile_sync SET
+                    concluida_em   = NOW(),
+                    ultima_versao  = :v,
+                    total_clientes = :total,
+                    novos          = :novos,
+                    atualizados    = :atualizados,
+                    paginas        = :paginas
+                WHERE id = :id
+            """),
+            {
+                "id": inicio_sync,
+                "v": nova_versao,
+                "total": total,
+                "novos": novos,
+                "atualizados": atualizados,
+                "paginas": paginas_processadas,
+            },
+        )
+        db.commit()
+
     except Exception as e:
         db.rollback()
         db.execute(
@@ -361,31 +391,6 @@ def sincronizar(db: Session) -> dict:
         )
         db.commit()
         raise
-
-    db.execute(
-        text("""
-            UPDATE pedido_mobile_sync SET
-                concluida_em   = NOW(),
-                ultima_versao  = :v,
-                total_clientes = :total,
-                novos          = :novos,
-                atualizados    = :atualizados,
-                paginas        = :paginas
-            WHERE id = :id
-        """),
-        {
-            "id": inicio_sync,
-            "v": nova_versao,
-            "total": total,
-            "novos": novos,
-            "atualizados": atualizados,
-            "paginas": paginas_processadas,
-        },
-    )
-    db.commit()
-
-    logger.info("Sincronizando datas de última compra via pedidointegracao...")
-    _sincronizar_pedidos(db)
 
     return {
         "total_registros": total,
