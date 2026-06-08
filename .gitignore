@@ -66,3 +66,6 @@ docker-compose.override.yml
 .claude/
 .playwright-mcp/
 .superpowers/
+
+node_modules/
+package.json
