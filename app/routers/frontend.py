@@ -6,14 +6,13 @@ from fastapi import APIRouter, BackgroundTasks, Depends, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import text
-from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm import Session
 
 from auth import require_login
 from database import get_db, SessionLocal
-from pedido_mobile import SyncError, sincronizar, sync_em_andamento, total_clientes, ultima_sync
+from pedido_mobile import SyncError, sincronizar, sync_em_andamento
 from routers.api import _UFS
-from schemas import BuscarRequest, Cnae, Municipio, Stats, UF
+from schemas import BuscarRequest, Cnae, Municipio, UF
 from service import ATALHOS, buscar, buscar_para_mapa, buscar_stats
 
 LIMITE_MAPA = 5000
@@ -34,47 +33,12 @@ templates = Jinja2Templates(directory="templates")
 router = APIRouter()
 
 
-def _get_stats(db: Session) -> Stats:
-    try:
-        total_estab = db.execute(text("SELECT COUNT(*) FROM estabelecimento")).scalar() or 0
-        total_emp = db.execute(text("SELECT COUNT(*) FROM empresa")).scalar() or 0
-        ultima = db.execute(
-            text("SELECT mes_referencia FROM importacao WHERE status='concluido' ORDER BY concluida_em DESC LIMIT 1")
-        ).scalar()
-    except ProgrammingError:
-        db.rollback()
-        return Stats(
-            total_estabelecimentos=0,
-            total_empresas=0,
-            ultima_importacao=None,
-            distribuicao_uf=[],
-        )
-    return Stats(
-        total_estabelecimentos=total_estab,
-        total_empresas=total_emp,
-        ultima_importacao=ultima,
-        distribuicao_uf=[],
-    )
-
-
-def _info_pedido_mobile(db: Session) -> dict:
-    try:
-        return {
-            "total": total_clientes(db),
-            "ultima": ultima_sync(db),
-        }
-    except Exception:
-        db.rollback()
-        return {"total": 0, "ultima": None}
-
-
 @router.get("/", response_class=HTMLResponse)
 def pagina_inicial(
     request: Request,
     current_user: dict = Depends(require_login),
     db: Session = Depends(get_db),
 ):
-    stats = _get_stats(db)
     ufs = [UF(sigla=s, nome=n) for s, n in _UFS]
     atalhos_view = [{"segmento": a["segmento"], "descricao": a["descricao"]} for a in ATALHOS]
     return templates.TemplateResponse("index.html", {
@@ -82,8 +46,6 @@ def pagina_inicial(
         "user": current_user,
         "ufs": ufs,
         "atalhos": atalhos_view,
-        "stats": stats,
-        "pm": _info_pedido_mobile(db),
     })
 
 
