@@ -1,5 +1,5 @@
 <form id="filtros-dashboard"
-      hx-get="/dashboard" hx-target="#paineis" hx-swap="outerHTML"
+      hx-get="{{ acao|default('/dashboard') }}" hx-target="{{ alvo|default('#paineis') }}" hx-swap="outerHTML"
       hx-push-url="true" hx-trigger="change"
       class="sticky top-0 z-20 -mx-5 px-5 py-3 bg-[#111] border-b border-[#2a2a2a] flex flex-wrap items-end gap-2.5">
   {% set f = dados.filtros %}
@@ -43,4 +43,21 @@
       {% for s in dados.opcoes.situacoes %}<option value="{{ s|lower }}" {% if f.situacao == s|lower %}selected{% endif %}>{{ s }}</option>{% endfor %}
     </select>
   </div>
+  {% if mostrar_abc %}
+  <div>
+    <label class="block text-[10px] font-semibold text-[#666] mb-1 uppercase tracking-wider">Classificar por</label>
+    <select name="criterio" class="rounded-lg bg-[#1a1a1a] border border-[#333] px-2.5 py-1.5 text-sm text-[#e5e5e5] focus:outline-none focus:border-orange-500">
+      <option value="receita" {% if dados.criterio == 'receita' %}selected{% endif %}>Receita</option>
+      <option value="quantidade" {% if dados.criterio == 'quantidade' %}selected{% endif %}>Quantidade</option>
+    </select>
+  </div>
+  <div>
+    <label class="block text-[10px] font-semibold text-[#666] mb-1 uppercase tracking-wider">Cortes ABC</label>
+    <select name="cortes" class="rounded-lg bg-[#1a1a1a] border border-[#333] px-2.5 py-1.5 text-sm text-[#e5e5e5] focus:outline-none focus:border-orange-500">
+      {% for val in ['50-30-20', '70-20-10', '80-15-5'] %}
+      <option value="{{ val }}" {% if dados.cortes == val %}selected{% endif %}>{{ val.replace('-', '/') }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  {% endif %}
 </form>
