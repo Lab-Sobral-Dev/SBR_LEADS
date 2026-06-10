@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from auth import require_login
 from database import get_db
-from pedido_mobile import sync_em_andamento, total_clientes, ultima_sync
+from pedido_mobile import info_pedido_mobile, sync_em_andamento
 from schemas import Stats
 
 router = APIRouter()
@@ -32,18 +32,10 @@ def _get_stats(db: Session) -> Stats:
     )
 
 
-def _info_pedido_mobile(db: Session) -> dict:
-    try:
-        return {"total": total_clientes(db), "ultima": ultima_sync(db)}
-    except Exception:
-        db.rollback()
-        return {"total": 0, "ultima": None}
-
-
 @router.get("/inicio", response_class=HTMLResponse)
 def inicio(request: Request, current_user: dict = Depends(require_login), db: Session = Depends(get_db)):
     return templates.TemplateResponse("inicio.html", {
-        "request": request, "user": current_user, "pm": _info_pedido_mobile(db),
+        "request": request, "user": current_user, "pm": info_pedido_mobile(db),
     })
 
 
@@ -59,7 +51,7 @@ def configuracoes(request: Request, current_user: dict = Depends(require_login),
     return templates.TemplateResponse("configuracoes.html", {
         "request": request, "user": current_user,
         "stats": _get_stats(db),
-        "pm": _info_pedido_mobile(db),
+        "pm": info_pedido_mobile(db),
         "sincronizando": sync_em_andamento(db),
         "resultado": None,
         "erro": None,

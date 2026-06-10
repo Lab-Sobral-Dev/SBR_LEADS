@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from auth import require_login
 from database import get_db, SessionLocal
-from pedido_mobile import SyncError, sincronizar, sync_em_andamento
+from pedido_mobile import SyncError, info_pedido_mobile, sincronizar, sync_em_andamento
 from routers.api import _UFS
 from schemas import BuscarRequest, Cnae, Municipio, UF
 from service import SEGMENTO_FIXO, buscar, buscar_para_mapa, buscar_stats, contar
@@ -138,7 +138,7 @@ def sync_clientes(
 
     return templates.TemplateResponse("partials/pedido_mobile_card.html", {
         "request": request,
-        "pm": _info_pedido_mobile(db),
+        "pm": info_pedido_mobile(db),
         "sincronizando": em_andamento,
         "resultado": None,
         "erro": erro,
@@ -154,7 +154,7 @@ def sync_status(
     em_andamento = sync_em_andamento(db)
     return templates.TemplateResponse("partials/pedido_mobile_card.html", {
         "request": request,
-        "pm": _info_pedido_mobile(db),
+        "pm": info_pedido_mobile(db),
         "sincronizando": em_andamento,
         "resultado": None,
         "erro": None,

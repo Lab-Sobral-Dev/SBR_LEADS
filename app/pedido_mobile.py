@@ -199,15 +199,17 @@ def _parse_date(s: str | None):
         return None
 
 
-def _sincronizar_pedidos(db: Session) -> None:
+def _sincronizar_pedidos(db: Session) -> int:
     """Percorre pedidointegracao/versao e atualiza ultima_compra_em por cliente.
     Usa versionamento incremental — apenas pedidos alterados desde o último sync.
     Se a API rejeitar a versão armazenada (400), reinicia do zero automaticamente.
-    """
+
+    Retorna a quantidade de pedidos efetivamente processados (upsertados)."""
     versao_inicial = _versao_pedidos(db)
     nova_versao = versao_inicial
     page = 1
     resetado = False
+    pedidos_processados = 0
 
     while True:
         try:
@@ -261,6 +263,7 @@ def _sincronizar_pedidos(db: Session) -> None:
                 "total_bruto":  pedido.get("pedidoTotalBruto"),
                 "total_liquido":pedido.get("pedidoTotalLiquido"),
             })
+            pedidos_processados += 1
 
             db.execute(text("DELETE FROM pedido_mobile_item WHERE pedido_numero = :n"), {"n": numero})
             for item in (pedido.get("itemList") or []):
@@ -285,6 +288,7 @@ def _sincronizar_pedidos(db: Session) -> None:
 
     _salvar_versao_pedidos(db, nova_versao)
     db.commit()
+    return pedidos_processados
 
 
 def sincronizar(db: Session) -> dict:
@@ -356,7 +360,7 @@ def sincronizar(db: Session) -> dict:
         # e a versão só é salva no fim, a próxima execução reprocessa do início
         # sem duplicar dados.
         logger.info("Sincronizando datas de última compra via pedidointegracao...")
-        _sincronizar_pedidos(db)
+        pedidos_sincronizados = _sincronizar_pedidos(db)
 
         db.execute(
             text("""
@@ -366,7 +370,8 @@ def sincronizar(db: Session) -> dict:
                     total_clientes = :total,
                     novos          = :novos,
                     atualizados    = :atualizados,
-                    paginas        = :paginas
+                    paginas        = :paginas,
+                    pedidos        = :pedidos
                 WHERE id = :id
             """),
             {
@@ -376,6 +381,7 @@ def sincronizar(db: Session) -> dict:
                 "novos": novos,
                 "atualizados": atualizados,
                 "paginas": paginas_processadas,
+                "pedidos": pedidos_sincronizados,
             },
         )
         db.commit()
@@ -397,6 +403,7 @@ def sincronizar(db: Session) -> dict:
         "novos": novos,
         "atualizados": atualizados,
         "paginas": paginas_processadas,
+        "pedidos": pedidos_sincronizados,
         "versao_inicial": versao_inicial,
         "nova_versao": nova_versao,
     }
@@ -406,10 +413,29 @@ def total_clientes(db: Session) -> int:
     return db.execute(text("SELECT COUNT(*) FROM cliente_pedido_mobile")).scalar() or 0
 
 
+def total_pedidos(db: Session) -> int:
+    return db.execute(text("SELECT COUNT(*) FROM pedido_mobile_pedido")).scalar() or 0
+
+
+def info_pedido_mobile(db: Session) -> dict:
+    """Resumo para o card do Pedido Mobile: total de clientes e pedidos no banco,
+    mais a última sincronização. Tolerante a falhas — devolve zeros se as tabelas
+    ainda não existirem."""
+    try:
+        return {
+            "total": total_clientes(db),
+            "total_pedidos": total_pedidos(db),
+            "ultima": ultima_sync(db),
+        }
+    except Exception:
+        db.rollback()
+        return {"total": 0, "total_pedidos": 0, "ultima": None}
+
+
 def ultima_sync(db: Session) -> dict | None:
     row = db.execute(
         text("""
-            SELECT concluida_em, ultima_versao, total_clientes, novos, atualizados, erro
+            SELECT concluida_em, ultima_versao, total_clientes, novos, atualizados, pedidos, erro
             FROM pedido_mobile_sync
             WHERE concluida_em IS NOT NULL
             ORDER BY concluida_em DESC
@@ -429,5 +455,6 @@ def ultima_sync(db: Session) -> dict | None:
         "total_clientes": row.total_clientes,
         "novos":          row.novos,
         "atualizados":    row.atualizados,
+        "pedidos":        row.pedidos,
         "erro":           row.erro,
     }

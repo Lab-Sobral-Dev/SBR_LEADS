@@ -8,10 +8,10 @@
     </svg>
     <div>
       <div class="text-sm text-white">
-        Clientes Pedido Mobile:
-        <span class="font-semibold text-orange-500">
-          {{ "{:,}".format(pm.total or 0).replace(",", ".") }}
-        </span>
+        Pedido Mobile —
+        Clientes: <span class="font-semibold text-orange-500">{{ "{:,}".format(pm.total or 0).replace(",", ".") }}</span>
+        <span class="text-[#555] mx-1">·</span>
+        Pedidos: <span class="font-semibold text-orange-500">{{ "{:,}".format(pm.total_pedidos or 0).replace(",", ".") }}</span>
       </div>
       <div class="text-xs text-[#666] mt-0.5">
         {% if erro %}
@@ -27,6 +27,8 @@
         {% elif pm.ultima %}
           Última sincronização:
           {{ pm.ultima.concluida_em.strftime("%d/%m/%Y %H:%M") if pm.ultima.concluida_em else "—" }}
+          {% if pm.ultima.novos or pm.ultima.atualizados %}<span class="text-[#888]">· {{ pm.ultima.novos or 0 }} clientes novos, {{ pm.ultima.atualizados or 0 }} atualizados</span>{% endif %}
+          {% if pm.ultima.pedidos %}<span class="text-[#888]">· {{ "{:,}".format(pm.ultima.pedidos).replace(",", ".") }} pedidos</span>{% endif %}
           {% if pm.ultima.erro %}<span class="text-red-400">— {{ pm.ultima.erro }}</span>{% endif %}
         {% else %}
           Nunca sincronizado

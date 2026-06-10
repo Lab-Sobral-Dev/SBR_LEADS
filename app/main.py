@@ -64,6 +64,11 @@ def _bootstrap_usuarios():
                 erro           VARCHAR(500)
             )
         """))
+        # Migração: coluna de pedidos sincronizados (para bancos criados antes desta versão)
+        conn.execute(text("""
+            ALTER TABLE pedido_mobile_sync
+            ADD COLUMN IF NOT EXISTS pedidos INTEGER
+        """))
         conn.execute(text("""
             ALTER TABLE cliente_pedido_mobile
             ADD COLUMN IF NOT EXISTS ultima_compra_em DATE
