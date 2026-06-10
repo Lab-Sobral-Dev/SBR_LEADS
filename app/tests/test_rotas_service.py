@@ -101,3 +101,85 @@ def test_maps_ignora_paradas_sem_coords():
 def test_maps_lista_vazia_ou_um_ponto():
     assert svc.montar_urls_google_maps([]) == []
     assert svc.montar_urls_google_maps([_p("A", 0.0, 0.0)]) == []
+
+
+# ---- helpers de banco ----
+
+from datetime import date
+
+from sqlalchemy import text
+
+
+def _seed_estab(db, *, doc, cnpj=("11111111", "0001", "11"), cnae="4771701",
+                municipio="2603900", uf="PE", cep="55000000", nome="Farmácia X"):
+    db.execute(text("""
+        INSERT INTO empresa (cnpj_basico, razao_social) VALUES (:b, :rs)
+        ON CONFLICT DO NOTHING
+    """), {"b": cnpj[0], "rs": nome})
+    db.execute(text("""
+        INSERT INTO municipio (codigo, descricao) VALUES (:c, 'Floriano')
+        ON CONFLICT DO NOTHING
+    """), {"c": municipio})
+    db.execute(text("""
+        INSERT INTO estabelecimento
+            (cnpj_basico, cnpj_ordem, cnpj_dv, nome_fantasia, cnae_fiscal_principal,
+             situacao_cadastral, cep, logradouro, numero, municipio, uf)
+        VALUES (:b, :o, :d, :nf, :cnae, '02', :cep, 'Rua A', '10', :mun, :uf)
+    """), {"b": cnpj[0], "o": cnpj[1], "d": cnpj[2], "nf": nome, "cnae": cnae,
+           "cep": cep, "mun": municipio, "uf": uf})
+
+
+def test_candidatos_traz_cliente_do_vendedor_e_prospecto(db):
+    # Cliente do João: basico "11111111" + ordem "0001" + dv "1" → documento "111111110001 1".
+    _seed_estab(db, doc="cli", cnpj=("11111111", "0001", "1"), nome="Cliente João")
+    db.execute(text("""
+        INSERT INTO cliente_pedido_mobile (documento, vendedor, inativo)
+        VALUES ('1111111100011', 'Joao', FALSE)
+    """))
+    # Prospecto (não-cliente) na mesma cidade.
+    _seed_estab(db, doc="pro", cnpj=("22222222", "0001", "2"), nome="Prospecto")
+
+    itens = svc.candidatos(db, vendedor="Joao", municipio_codigo="2603900", hoje=date(2026, 6, 10))
+    por_doc = {i["documento"]: i for i in itens}
+    assert por_doc["1111111100011"]["eh_cliente"] is True
+    assert por_doc["2222222200012"]["eh_cliente"] is False
+    assert por_doc["1111111100011"]["cep"] == "55000000"
+
+
+def test_candidatos_nao_traz_cliente_de_outro_vendedor(db):
+    _seed_estab(db, doc="cli", cnpj=("33333333", "0001", "3"), nome="Cliente Maria")
+    db.execute(text("""
+        INSERT INTO cliente_pedido_mobile (documento, vendedor, inativo)
+        VALUES ('3333333300013', 'Maria', FALSE)
+    """))
+    itens = svc.candidatos(db, vendedor="Joao", municipio_codigo="2603900", hoje=date(2026, 6, 10))
+    # Cliente da Maria não aparece (nem como prospecto, pois é cliente).
+    assert all(i["documento"] != "3333333300013" for i in itens)
+
+
+def test_candidatos_marca_em_risco(db):
+    _seed_estab(db, doc="cli", cnpj=("44444444", "0001", "4"), nome="Cliente Atrasado")
+    db.execute(text("""
+        INSERT INTO cliente_pedido_mobile (documento, vendedor, inativo)
+        VALUES ('4444444400014', 'Joao', FALSE)
+    """))
+    # Última compra há muito tempo -> em risco.
+    db.execute(text("""
+        INSERT INTO pedido_mobile_pedido (pedido_numero, cliente_documento, vendedor, emissao, total_liquido)
+        VALUES (901, '4444444400014', 'Joao', '2026-01-01', 100)
+    """))
+    itens = svc.candidatos(db, vendedor="Joao", municipio_codigo="2603900", hoje=date(2026, 6, 10))
+    por_doc = {i["documento"]: i for i in itens}
+    assert por_doc["4444444400014"]["em_risco"] is True
+
+
+def test_documentos_em_risco_respeita_limite_de_dias(db):
+    db.execute(text("""
+        INSERT INTO pedido_mobile_pedido (pedido_numero, cliente_documento, vendedor, emissao, total_liquido)
+        VALUES
+            (801, 'doc_antigo', 'Joao', '2026-01-01', 100),
+            (802, 'doc_recente', 'Joao', '2026-06-09', 100)
+    """))
+    risco = svc.documentos_em_risco(db, vendedor="Joao", hoje=date(2026, 6, 10))
+    assert "doc_antigo" in risco       # > 30 dias
+    assert "doc_recente" not in risco  # < 30 dias

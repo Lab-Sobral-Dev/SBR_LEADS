@@ -94,3 +94,63 @@ def montar_urls_google_maps(paradas: list[dict],
         urls.append(_url_trecho(trecho))
         i += passo
     return urls
+
+
+# ----------------------------------------------------------------- helpers de DB
+
+def documentos_em_risco(db: Session, *, vendedor: str, hoje, dias_min: int = 30) -> set[str]:
+    """Conjunto de documentos (CNPJ) de clientes do vendedor cuja última compra
+    foi há `dias_min` dias ou mais. Espelha a regra de risco do cockpit."""
+    rows = db.execute(text("""
+        SELECT ped.cliente_documento AS documento
+        FROM pedido_mobile_pedido ped
+        LEFT JOIN cliente_pedido_mobile pm ON pm.documento = ped.cliente_documento
+        WHERE COALESCE(NULLIF(TRIM(ped.vendedor), ''), '') = :vendedor
+          AND (pm.inativo = FALSE OR pm.inativo IS NULL)
+        GROUP BY ped.cliente_documento
+        HAVING (:hoje - MAX(ped.emissao)) >= :dias_min
+    """), {"vendedor": vendedor, "hoje": hoje, "dias_min": dias_min}).scalars().all()
+    return set(rows)
+
+
+def candidatos(db: Session, *, vendedor: str, municipio_codigo: str, hoje) -> list[dict]:
+    """Clientes do vendedor + prospectos (não-clientes) no município (segmento
+    fixo farmácia, situação ativa). Marca `em_risco` reusando a regra do cockpit."""
+    rows = db.execute(text("""
+        SELECT
+            e.cnpj_basico || e.cnpj_ordem || e.cnpj_dv          AS documento,
+            COALESCE(NULLIF(TRIM(e.nome_fantasia), ''),
+                     emp.razao_social, '—')                     AS nome,
+            e.cep, e.tipo_logradouro, e.logradouro, e.numero, e.bairro,
+            m.descricao                                         AS municipio,
+            e.uf,
+            (pm.documento IS NOT NULL)                          AS eh_cliente,
+            pm.vendedor                                         AS vendedor
+        FROM estabelecimento e
+        LEFT JOIN empresa    emp ON emp.cnpj_basico = e.cnpj_basico
+        LEFT JOIN municipio  m   ON m.codigo        = e.municipio
+        LEFT JOIN cliente_pedido_mobile pm
+               ON pm.documento = e.cnpj_basico || e.cnpj_ordem || e.cnpj_dv
+              AND pm.inativo = FALSE
+        WHERE e.municipio = :municipio
+          AND e.cnae_fiscal_principal = ANY(:cnaes)
+          AND e.situacao_cadastral = '02'
+          AND (pm.vendedor = :vendedor OR pm.documento IS NULL)
+        ORDER BY (pm.documento IS NOT NULL) DESC, nome ASC
+    """), {"municipio": municipio_codigo, "cnaes": CNAES_SEGMENTO, "vendedor": vendedor}).fetchall()
+
+    risco = documentos_em_risco(db, vendedor=vendedor, hoje=hoje)
+    return [{
+        "documento": r.documento,
+        "nome": r.nome,
+        "cep": r.cep,
+        "tipo_logradouro": r.tipo_logradouro,
+        "logradouro": r.logradouro,
+        "numero": r.numero,
+        "bairro": r.bairro,
+        "municipio": r.municipio,
+        "uf": r.uf,
+        "eh_cliente": bool(r.eh_cliente),
+        "vendedor": r.vendedor,
+        "em_risco": r.documento in risco,
+    } for r in rows]
