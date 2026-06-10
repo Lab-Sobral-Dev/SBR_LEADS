@@ -58,7 +58,7 @@ def ordenar_vizinho_mais_proximo(paradas: list[dict], partida_idx: int = 0) -> l
     while restantes:
         prox = min(restantes, key=lambda p: haversine_km(atual["lat"], atual["lng"], p["lat"], p["lng"]))
         ordenado.append(prox)
-        restantes.remove(prox)
+        restantes.pop(next(j for j, x in enumerate(restantes) if x is prox))
         atual = prox
     return ordenado + sem
 

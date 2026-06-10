@@ -52,6 +52,20 @@ def test_ordenar_partida_idx_invalido_usa_zero():
     assert saida[0]["documento"] == "A"
 
 
+def test_ordenar_partida_sem_coords_usa_primeiro_com_coords():
+    paradas = [{"documento": "X", "lat": None, "lng": None}, _p("A", 0.0, 0.0), _p("B", 0.0, 1.0)]
+    saida = svc.ordenar_vizinho_mais_proximo(paradas, partida_idx=0)
+    assert saida[0]["documento"] == "A"
+    assert saida[-1]["documento"] == "X"
+
+
+def test_ordenar_todas_sem_coords_retorna_na_ordem_original():
+    paradas = [{"documento": "X", "lat": None, "lng": None},
+               {"documento": "Y", "lat": None, "lng": None}]
+    saida = svc.ordenar_vizinho_mais_proximo(paradas, partida_idx=0)
+    assert [p["documento"] for p in saida] == ["X", "Y"]
+
+
 # ---- URLs do Google Maps ----
 
 def test_maps_um_trecho_ate_10_paradas():
