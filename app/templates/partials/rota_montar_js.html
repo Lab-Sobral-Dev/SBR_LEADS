@@ -153,7 +153,7 @@
     const vendedor = document.getElementById('f-vendedor').value;
     const uf = document.getElementById('f-uf').value.toUpperCase();
     const municipio = document.getElementById('f-municipio').value;
-    if (!vendedor || !municipio || !paradas.length) { alert('Escolha vendedor, cidade e ao menos uma parada.'); return; }
+    if (!vendedor || !uf || !municipio || !paradas.length) { alert('Escolha vendedor, UF, cidade e ao menos uma parada.'); return; }
     const nome = prompt('Nome da rota:', (rotaSalva && rotaSalva.nome) || '');
     if (!nome) return;
     const body = { nome, vendedor, municipio, uf, paradas };

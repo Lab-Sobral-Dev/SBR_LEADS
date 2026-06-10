@@ -11,7 +11,6 @@ from urllib.parse import urlencode
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from dashboard_filters import FiltrosDashboard  # noqa: F401  (usado pelos helpers de DB)
 from service import ATALHOS, SEGMENTO_FIXO
 
 # CNAEs do segmento fixo (farmácia) — a base só contém esse segmento.

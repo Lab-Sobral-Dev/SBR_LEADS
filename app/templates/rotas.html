@@ -37,7 +37,7 @@
           <td class="px-4 py-3 text-right text-[#777]">{{ r.atualizado_em.strftime('%d/%m/%Y') if r.atualizado_em else '—' }}</td>
           <td class="px-4 py-3 text-right">
             <form method="post" action="/rotas/{{ r.id }}/excluir"
-                  onsubmit="return confirm('Excluir a rota &quot;{{ r.nome }}&quot;?')">
+                  onsubmit="return confirm('Excluir esta rota?')">
               <button type="submit" class="text-xs text-[#666] hover:text-red-400">excluir</button>
             </form>
           </td>
