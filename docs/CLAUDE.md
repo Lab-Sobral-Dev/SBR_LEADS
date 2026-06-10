@@ -94,9 +94,12 @@
   - Fase 2 / A2 — Separação de Busca e Mapa (filtros na querystring)
   - Fase 2 / B — **Dashboard de Análise de Vendas**: curvas ABC (Pareto) de produtos e representadas, critério selecionável receita/quantidade, cortes 50/30/20 · 70/20/10 · 80/15/5, em abas (resumo + Pareto + tabela com filtro por classe). Spec/plano em `docs/superpowers/{specs,plans}/2026-06-09-analise-vendas-abc*`
 
+- **Rotas de Visita** (item "Rotas" no menu) — montagem de rotas de visita por vendedor (visão gestor): tela de 3 colunas (candidatos clientes+prospectos com selo de risco | mapa Leaflet | rota arrastável), ordenação por vizinho mais próximo (função pura no backend), handoff pro Google Maps com quebra em trechos (>10 paradas), rotas salvas/nomeadas (tabelas `rota`/`rota_parada`). Geocode por CEP client-side reusando o cache do Mapa. Novo `app/rotas_service.py` + `app/routers/rotas.py`. 23 testes no service (68 na suíte). Spec/plano em `docs/superpowers/{specs,plans}/2026-06-10-rotas-visita*`
+
 **Próximas frentes:**
 - **Cockpit Comercial Fase 3** — Realizado vs. meta (exige cadastro de metas; dado/telas novos)
 - **Etapa 6 (infra)** — Deploy VPS Hostinger (Caddy + cron mensal + backup)
+- **Rotas de Visita — evoluções futuras** — login próprio de vendedor, histórico de visitas, autocomplete de município (hoje usa código IBGE)
 
 ## Próximas Etapas
 
