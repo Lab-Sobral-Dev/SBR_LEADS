@@ -187,3 +187,59 @@ def test_documentos_em_risco_respeita_limite_de_dias(db):
     assert "doc_recente" not in risco   # < 30 dias
     assert "doc_30dias" in risco        # exatamente 30 dias -> em risco (>=)
     assert "doc_29dias" not in risco    # 29 dias -> fora
+
+
+# ---- CRUD de rotas ----
+
+def _paradas_exemplo():
+    return [
+        {"documento": "111", "nome": "A", "eh_cliente": True,  "cep": "55000000", "lat": -6.7, "lng": -43.0},
+        {"documento": "222", "nome": "B", "eh_cliente": False, "cep": None,       "lat": None, "lng": None},
+    ]
+
+
+def test_criar_e_carregar_rota_preserva_ordem(db):
+    rid = svc.criar_rota(db, nome="Segunda Centro", vendedor="Joao",
+                         municipio="Floriano", uf="PI", paradas=_paradas_exemplo())
+    assert isinstance(rid, int)
+    rota = svc.carregar_rota(db, rid)
+    assert rota["nome"] == "Segunda Centro"
+    assert rota["vendedor"] == "Joao"
+    assert [p["documento"] for p in rota["paradas"]] == ["111", "222"]
+    assert rota["paradas"][0]["ordem"] == 1
+    assert rota["paradas"][0]["lat"] == -6.7
+    assert rota["paradas"][0]["eh_cliente"] is True
+    assert rota["paradas"][1]["lat"] is None
+
+
+def test_listar_rotas_traz_contagem_de_paradas(db):
+    svc.criar_rota(db, nome="R1", vendedor="Joao", municipio="Floriano", uf="PI",
+                   paradas=_paradas_exemplo())
+    lista = svc.listar_rotas(db)
+    assert len(lista) == 1
+    assert lista[0]["nome"] == "R1"
+    assert lista[0]["n_paradas"] == 2
+
+
+def test_atualizar_rota_substitui_paradas(db):
+    rid = svc.criar_rota(db, nome="R", vendedor="Joao", municipio="Floriano", uf="PI",
+                         paradas=_paradas_exemplo())
+    svc.atualizar_rota(db, rid, nome="R editada", paradas=[
+        {"documento": "999", "nome": "Z", "eh_cliente": False, "cep": None, "lat": 1.0, "lng": 2.0},
+    ])
+    rota = svc.carregar_rota(db, rid)
+    assert rota["nome"] == "R editada"
+    assert [p["documento"] for p in rota["paradas"]] == ["999"]
+
+
+def test_excluir_rota_remove_paradas_em_cascata(db):
+    rid = svc.criar_rota(db, nome="R", vendedor="Joao", municipio="Floriano", uf="PI",
+                         paradas=_paradas_exemplo())
+    svc.excluir_rota(db, rid)
+    assert svc.carregar_rota(db, rid) is None
+    n = db.execute(text("SELECT COUNT(*) FROM rota_parada WHERE rota_id = :r"), {"r": rid}).scalar()
+    assert n == 0
+
+
+def test_carregar_rota_inexistente_retorna_none(db):
+    assert svc.carregar_rota(db, 999999) is None

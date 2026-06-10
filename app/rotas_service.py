@@ -156,3 +156,78 @@ def candidatos(db: Session, *, vendedor: str, municipio_codigo: str, hoje) -> li
         "vendedor": r.vendedor,
         "em_risco": r.documento in risco,
     } for r in rows]
+
+
+# ----------------------------------------------------------------------- CRUD
+
+def _inserir_paradas(db: Session, rota_id: int, paradas: list[dict]) -> None:
+    for ordem, p in enumerate(paradas, start=1):
+        db.execute(text("""
+            INSERT INTO rota_parada
+                (rota_id, ordem, documento, nome_cache, eh_cliente, cep_cache, lat_cache, lng_cache)
+            VALUES (:rid, :ordem, :doc, :nome, :cli, :cep, :lat, :lng)
+        """), {
+            "rid": rota_id, "ordem": ordem,
+            "doc": p["documento"], "nome": p.get("nome") or "—",
+            "cli": bool(p.get("eh_cliente")),
+            "cep": p.get("cep"), "lat": p.get("lat"), "lng": p.get("lng"),
+        })
+
+
+def criar_rota(db: Session, *, nome: str, vendedor: str, municipio: str, uf: str,
+               paradas: list[dict]) -> int:
+    rid = db.execute(text("""
+        INSERT INTO rota (nome, vendedor, municipio, uf)
+        VALUES (:nome, :vend, :mun, :uf) RETURNING id
+    """), {"nome": nome, "vend": vendedor, "mun": municipio, "uf": uf}).scalar()
+    _inserir_paradas(db, rid, paradas)
+    return rid
+
+
+def atualizar_rota(db: Session, rota_id: int, *, nome: str, paradas: list[dict]) -> None:
+    db.execute(text("""
+        UPDATE rota SET nome = :nome, atualizado_em = NOW() WHERE id = :id
+    """), {"nome": nome, "id": rota_id})
+    db.execute(text("DELETE FROM rota_parada WHERE rota_id = :id"), {"id": rota_id})
+    _inserir_paradas(db, rota_id, paradas)
+
+
+def listar_rotas(db: Session) -> list[dict]:
+    rows = db.execute(text("""
+        SELECT r.id, r.nome, r.vendedor, r.municipio, r.uf, r.atualizado_em,
+               COUNT(p.id) AS n_paradas
+        FROM rota r
+        LEFT JOIN rota_parada p ON p.rota_id = r.id
+        GROUP BY r.id
+        ORDER BY r.atualizado_em DESC
+    """)).fetchall()
+    return [{
+        "id": r.id, "nome": r.nome, "vendedor": r.vendedor,
+        "municipio": r.municipio, "uf": r.uf,
+        "atualizado_em": r.atualizado_em, "n_paradas": int(r.n_paradas or 0),
+    } for r in rows]
+
+
+def carregar_rota(db: Session, rota_id: int) -> dict | None:
+    r = db.execute(text("""
+        SELECT id, nome, vendedor, municipio, uf FROM rota WHERE id = :id
+    """), {"id": rota_id}).fetchone()
+    if r is None:
+        return None
+    paradas = db.execute(text("""
+        SELECT ordem, documento, nome_cache, eh_cliente, cep_cache, lat_cache, lng_cache
+        FROM rota_parada WHERE rota_id = :id ORDER BY ordem
+    """), {"id": rota_id}).fetchall()
+    return {
+        "id": r.id, "nome": r.nome, "vendedor": r.vendedor,
+        "municipio": r.municipio, "uf": r.uf,
+        "paradas": [{
+            "ordem": p.ordem, "documento": p.documento, "nome": p.nome_cache,
+            "eh_cliente": bool(p.eh_cliente), "cep": p.cep_cache,
+            "lat": p.lat_cache, "lng": p.lng_cache,
+        } for p in paradas],
+    }
+
+
+def excluir_rota(db: Session, rota_id: int) -> None:
+    db.execute(text("DELETE FROM rota WHERE id = :id"), {"id": rota_id})
