@@ -161,6 +161,7 @@ def candidatos(db: Session, *, vendedor: str, municipio_codigo: str, hoje) -> li
 # ----------------------------------------------------------------------- CRUD
 
 def _inserir_paradas(db: Session, rota_id: int, paradas: list[dict]) -> None:
+    """Insere as paradas da rota na ordem da lista (ordem 1..N)."""
     for ordem, p in enumerate(paradas, start=1):
         db.execute(text("""
             INSERT INTO rota_parada
@@ -176,6 +177,7 @@ def _inserir_paradas(db: Session, rota_id: int, paradas: list[dict]) -> None:
 
 def criar_rota(db: Session, *, nome: str, vendedor: str, municipio: str, uf: str,
                paradas: list[dict]) -> int:
+    """Cria uma rota e suas paradas. Retorna o id. NÃO commita (o router commita)."""
     rid = db.execute(text("""
         INSERT INTO rota (nome, vendedor, municipio, uf)
         VALUES (:nome, :vend, :mun, :uf) RETURNING id
@@ -185,6 +187,7 @@ def criar_rota(db: Session, *, nome: str, vendedor: str, municipio: str, uf: str
 
 
 def atualizar_rota(db: Session, rota_id: int, *, nome: str, paradas: list[dict]) -> None:
+    """Atualiza nome e substitui todas as paradas da rota. NÃO commita."""
     db.execute(text("""
         UPDATE rota SET nome = :nome, atualizado_em = NOW() WHERE id = :id
     """), {"nome": nome, "id": rota_id})
@@ -193,6 +196,7 @@ def atualizar_rota(db: Session, rota_id: int, *, nome: str, paradas: list[dict])
 
 
 def listar_rotas(db: Session) -> list[dict]:
+    """Lista as rotas salvas com a contagem de paradas, mais recentes primeiro."""
     rows = db.execute(text("""
         SELECT r.id, r.nome, r.vendedor, r.municipio, r.uf, r.atualizado_em,
                COUNT(p.id) AS n_paradas
@@ -209,6 +213,7 @@ def listar_rotas(db: Session) -> list[dict]:
 
 
 def carregar_rota(db: Session, rota_id: int) -> dict | None:
+    """Carrega uma rota com suas paradas ordenadas, ou None se não existir."""
     r = db.execute(text("""
         SELECT id, nome, vendedor, municipio, uf FROM rota WHERE id = :id
     """), {"id": rota_id}).fetchone()
@@ -230,4 +235,5 @@ def carregar_rota(db: Session, rota_id: int) -> dict | None:
 
 
 def excluir_rota(db: Session, rota_id: int) -> None:
+    """Exclui a rota (as paradas saem por ON DELETE CASCADE). NÃO commita."""
     db.execute(text("DELETE FROM rota WHERE id = :id"), {"id": rota_id})

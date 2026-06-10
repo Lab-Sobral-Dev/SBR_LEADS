@@ -213,12 +213,12 @@ def test_criar_e_carregar_rota_preserva_ordem(db):
 
 
 def test_listar_rotas_traz_contagem_de_paradas(db):
-    svc.criar_rota(db, nome="R1", vendedor="Joao", municipio="Floriano", uf="PI",
-                   paradas=_paradas_exemplo())
+    rid = svc.criar_rota(db, nome="R1", vendedor="Joao", municipio="Floriano", uf="PI",
+                         paradas=_paradas_exemplo())
     lista = svc.listar_rotas(db)
-    assert len(lista) == 1
-    assert lista[0]["nome"] == "R1"
-    assert lista[0]["n_paradas"] == 2
+    item = next(r for r in lista if r["id"] == rid)
+    assert item["nome"] == "R1"
+    assert item["n_paradas"] == 2
 
 
 def test_atualizar_rota_substitui_paradas(db):
@@ -243,3 +243,12 @@ def test_excluir_rota_remove_paradas_em_cascata(db):
 
 def test_carregar_rota_inexistente_retorna_none(db):
     assert svc.carregar_rota(db, 999999) is None
+
+
+def test_criar_rota_sem_paradas_funciona(db):
+    rid = svc.criar_rota(db, nome="Vazia", vendedor="Joao", municipio="Floriano", uf="PI", paradas=[])
+    rota = svc.carregar_rota(db, rid)
+    assert rota["paradas"] == []
+    lista = svc.listar_rotas(db)
+    item = next(r for r in lista if r["id"] == rid)
+    assert item["n_paradas"] == 0
