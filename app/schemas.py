@@ -79,3 +79,29 @@ class Stats(BaseModel):
     total_empresas: int
     ultima_importacao: str | None
     distribuicao_uf: list[dict]
+
+
+class ParadaIn(BaseModel):
+    documento: str
+    nome: str = "—"
+    eh_cliente: bool = False
+    cep: str | None = None
+    lat: float | None = None
+    lng: float | None = None
+
+
+class OrdenarRequest(BaseModel):
+    partida_idx: int = 0
+    paradas: list[ParadaIn] = []
+
+
+class MapsUrlsRequest(BaseModel):
+    paradas: list[ParadaIn] = []
+
+
+class SalvarRotaRequest(BaseModel):
+    nome: str
+    vendedor: str
+    municipio: str
+    uf: str
+    paradas: list[ParadaIn] = []
