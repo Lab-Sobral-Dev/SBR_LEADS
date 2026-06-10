@@ -32,7 +32,7 @@
         <tr class="border-b border-[#1e1e1e] hover:bg-[#1a1a1a]">
           <td class="px-4 py-3"><a href="/rotas/{{ r.id }}" class="text-orange-500 hover:underline">{{ r.nome }}</a></td>
           <td class="px-4 py-3 text-[#ccc]">{{ r.vendedor }}</td>
-          <td class="px-4 py-3 text-[#ccc]">{{ r.municipio }}/{{ r.uf }}</td>
+          <td class="px-4 py-3 text-[#ccc]">{{ r.municipio_nome }}/{{ r.uf }}</td>
           <td class="px-4 py-3 text-right text-[#ccc]">{{ r.n_paradas }}</td>
           <td class="px-4 py-3 text-right text-[#777]">{{ r.atualizado_em.strftime('%d/%m/%Y') if r.atualizado_em else '—' }}</td>
           <td class="px-4 py-3 text-right">

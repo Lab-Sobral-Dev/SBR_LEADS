@@ -195,20 +195,42 @@ def atualizar_rota(db: Session, rota_id: int, *, nome: str, paradas: list[dict])
 
 
 def listar_rotas(db: Session) -> list[dict]:
-    """Lista as rotas salvas com a contagem de paradas, mais recentes primeiro."""
+    """Lista as rotas salvas com a contagem de paradas, mais recentes primeiro.
+
+    A coluna `municipio` guarda o código IBGE; o JOIN resolve o nome para exibição
+    (`municipio_nome`), caindo no próprio código se não houver correspondência."""
     rows = db.execute(text("""
         SELECT r.id, r.nome, r.vendedor, r.municipio, r.uf, r.atualizado_em,
+               COALESCE(m.descricao, r.municipio) AS municipio_nome,
                COUNT(p.id) AS n_paradas
         FROM rota r
         LEFT JOIN rota_parada p ON p.rota_id = r.id
-        GROUP BY r.id
+        LEFT JOIN municipio   m ON m.codigo  = r.municipio
+        GROUP BY r.id, m.descricao
         ORDER BY r.atualizado_em DESC
     """)).fetchall()
     return [{
         "id": r.id, "nome": r.nome, "vendedor": r.vendedor,
-        "municipio": r.municipio, "uf": r.uf,
+        "municipio": r.municipio, "municipio_nome": r.municipio_nome, "uf": r.uf,
         "atualizado_em": r.atualizado_em, "n_paradas": int(r.n_paradas or 0),
     } for r in rows]
+
+
+def municipios_por_uf(db: Session, uf: str) -> list[dict]:
+    """Municípios (código IBGE + nome) que têm estabelecimentos na UF.
+
+    Mesma fonte do autocomplete da Busca de Leads — usado para popular o select
+    de município na edição de uma rota já salva."""
+    if not uf:
+        return []
+    rows = db.execute(text("""
+        SELECT DISTINCT m.codigo, m.descricao
+        FROM municipio m
+        JOIN estabelecimento e ON e.municipio = m.codigo
+        WHERE e.uf = :uf
+        ORDER BY m.descricao
+    """), {"uf": uf.upper()}).fetchall()
+    return [{"codigo": r.codigo, "descricao": r.descricao} for r in rows]
 
 
 def carregar_rota(db: Session, rota_id: int) -> dict | None:

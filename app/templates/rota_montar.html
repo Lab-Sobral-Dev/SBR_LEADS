@@ -26,12 +26,23 @@
       </select>
     </label>
     <label class="text-xs text-[#888]">UF
-      <input id="f-uf" maxlength="2" value="{{ rota.uf if rota else '' }}"
-             class="block mt-1 w-16 bg-[#222] border border-[#3a3a3a] rounded-lg px-3 py-2 text-sm text-[#ddd] uppercase">
+      <select id="f-uf" name="uf"
+              hx-get="/municipios-options" hx-target="#f-municipio" hx-trigger="change" hx-include="[name='uf']"
+              class="block mt-1 bg-[#222] border border-[#3a3a3a] rounded-lg px-3 py-2 text-sm text-[#ddd]">
+        <option value="">UF</option>
+        {% for uf in ufs %}
+        <option value="{{ uf.sigla }}" {{ 'selected' if rota and rota.uf == uf.sigla else '' }}>{{ uf.sigla }}</option>
+        {% endfor %}
+      </select>
     </label>
-    <label class="text-xs text-[#888]">Cidade (código IBGE)
-      <input id="f-municipio" value="{{ rota.municipio if rota else '' }}"
-             class="block mt-1 bg-[#222] border border-[#3a3a3a] rounded-lg px-3 py-2 text-sm text-[#ddd]">
+    <label class="text-xs text-[#888]">Cidade
+      <select id="f-municipio" name="municipio"
+              class="block mt-1 min-w-[180px] bg-[#222] border border-[#3a3a3a] rounded-lg px-3 py-2 text-sm text-[#ddd]">
+        <option value="">{{ 'Selecione a UF…' if not municipios else 'Selecione…' }}</option>
+        {% for m in municipios %}
+        <option value="{{ m.codigo }}" {{ 'selected' if rota and rota.municipio == m.codigo else '' }}>{{ m.descricao }}</option>
+        {% endfor %}
+      </select>
     </label>
     <button type="button" id="btn-carregar"
             hx-get="/rotas/candidatos" hx-target="#lista-candidatos"

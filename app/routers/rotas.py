@@ -10,7 +10,10 @@ from auth import require_login
 from config import BRT
 from database import get_db
 from dashboard_service import opcoes_filtro
-from schemas import MapsUrlsRequest, OrdenarRequest, SalvarRotaRequest
+from routers.api import _UFS
+from schemas import MapsUrlsRequest, OrdenarRequest, SalvarRotaRequest, UF
+
+_UFS_OPCOES = [UF(sigla=s, nome=n) for s, n in _UFS]
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -29,6 +32,7 @@ def nova(request: Request, current_user: dict = Depends(require_login), db: Sess
     return templates.TemplateResponse("rota_montar.html", {
         "request": request, "user": current_user,
         "vendedores": opcoes_filtro(db).get("vendedores", []),
+        "ufs": _UFS_OPCOES, "municipios": [],
         "rota": None, "trechos": [],
     })
 
@@ -54,6 +58,7 @@ def editar(rota_id: int, request: Request, current_user: dict = Depends(require_
     return templates.TemplateResponse("rota_montar.html", {
         "request": request, "user": current_user,
         "vendedores": opcoes_filtro(db).get("vendedores", []),
+        "ufs": _UFS_OPCOES, "municipios": svc.municipios_por_uf(db, rota["uf"]),
         "rota": rota, "trechos": svc.montar_urls_google_maps(rota["paradas"]),
     })
 

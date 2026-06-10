@@ -252,3 +252,29 @@ def test_criar_rota_sem_paradas_funciona(db):
     lista = svc.listar_rotas(db)
     item = next(r for r in lista if r["id"] == rid)
     assert item["n_paradas"] == 0
+
+
+# ---- município: código IBGE armazenado, nome resolvido para exibição ----
+
+def test_listar_rotas_resolve_nome_do_municipio(db):
+    db.execute(text("INSERT INTO municipio (codigo, descricao) VALUES ('2211001', 'Floriano') ON CONFLICT DO NOTHING"))
+    rid = svc.criar_rota(db, nome="R", vendedor="Joao", municipio="2211001", uf="PI", paradas=[])
+    item = next(r for r in svc.listar_rotas(db) if r["id"] == rid)
+    assert item["municipio"] == "2211001"        # código guardado
+    assert item["municipio_nome"] == "Floriano"  # nome resolvido pelo JOIN
+
+
+def test_listar_rotas_municipio_sem_cadastro_cai_no_codigo(db):
+    rid = svc.criar_rota(db, nome="R2", vendedor="Joao", municipio="9999999", uf="PI", paradas=[])
+    item = next(r for r in svc.listar_rotas(db) if r["id"] == rid)
+    assert item["municipio_nome"] == "9999999"   # fallback no próprio código
+
+
+def test_municipios_por_uf_lista_municipios_da_uf(db):
+    _seed_estab(db, cnpj=("55555555", "0001", "5"), municipio="2211001", uf="PI", nome="Farm PI")
+    out = svc.municipios_por_uf(db, "PI")
+    assert any(m["codigo"] == "2211001" and m["descricao"] == "Floriano" for m in out)
+
+
+def test_municipios_por_uf_sem_uf_retorna_vazio(db):
+    assert svc.municipios_por_uf(db, "") == []
