@@ -6,6 +6,11 @@
   let paradas = [];          // [{documento, nome, eh_cliente, cep, lat, lng, logradouro,...}]
   let partidaIdx = 0;
 
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
   // ---------- geocode (reusa cache do Mapa) ----------
   function cacheGet(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (_) { return null; } }
   function cacheSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) {} }
@@ -21,7 +26,7 @@
       if (!r.ok) { cacheSet(chave, { lat: null }); return null; }
       const d = await r.json();
       if (!d.lat || !d.lng) { cacheSet(chave, { lat: null }); return null; }
-      const coords = { lat: parseFloat(d.lat), lng: parseFloat(d.lng) };
+      const coords = { lat: parseFloat(d.lat), lon: parseFloat(d.lng) };
       cacheSet(chave, coords);
       return coords;
     } catch (_) { return null; }
@@ -30,7 +35,7 @@
   async function geocodeParada(p) {
     if (p.lat != null && p.lng != null) return;
     const c = await coordsPorCep(p.cep);
-    if (c) { p.lat = c.lat; p.lng = c.lng; }
+    if (c) { p.lat = c.lat; p.lng = c.lon; }  // cache usa 'lon' (compat. com o Mapa); parada usa 'lng'
   }
 
   // ---------- render ----------
@@ -45,12 +50,19 @@
       li.innerHTML =
         '<span class="cursor-move text-[#555]">⠿</span>' +
         '<span class="text-[#888] w-5 text-center">' + (i + 1) + '</span>' +
-        '<span class="flex-1 truncate text-[#ddd]">' + (i === partidaIdx ? '🏁 ' : '') + (p.nome || '') + '</span>' +
+        '<span class="flex-1 truncate text-[#ddd]">' + (i === partidaIdx ? '🏁 ' : '') + esc(p.nome) + '</span>' +
         '<button class="text-[#666] hover:text-orange-500 text-xs" title="Definir como partida">↑</button>' +
         '<button class="text-[#666] hover:text-red-400 text-xs" title="Remover">✕</button>';
       const [, , , btnPart, btnRem] = li.children;
       btnPart.onclick = () => { partidaIdx = i; render(); };
-      btnRem.onclick = () => { paradas.splice(i, 1); if (partidaIdx >= paradas.length) partidaIdx = 0; render(); desenharMapa(); };
+      btnRem.onclick = () => {
+        const docPartida = paradas[partidaIdx] && paradas[partidaIdx].documento;
+        paradas.splice(i, 1);
+        const np = paradas.findIndex(x => x.documento === docPartida);
+        partidaIdx = np >= 0 ? np : 0;
+        render();
+        desenharMapa();
+      };
       ul.appendChild(li);
     });
     sincronizarChecks();
@@ -65,15 +77,20 @@
   window.toggleCandidato = async function (ch) {
     const doc = ch.dataset.documento;
     const idx = paradas.findIndex(p => p.documento === doc);
-    if (idx >= 0) { paradas.splice(idx, 1); if (partidaIdx >= paradas.length) partidaIdx = 0; }
-    else {
-      const p = {
-        documento: doc, nome: ch.dataset.nome, cep: ch.dataset.cep,
-        eh_cliente: ch.dataset.ehCliente === '1', lat: null, lng: null,
-      };
-      await geocodeParada(p);
-      paradas.push(p);
+    if (idx >= 0) {
+      paradas.splice(idx, 1);
+      if (partidaIdx >= paradas.length) partidaIdx = 0;
+      render();
+      desenharMapa();
+      return;
     }
+    const p = {
+      documento: doc, nome: ch.dataset.nome, cep: ch.dataset.cep,
+      eh_cliente: ch.dataset.ehCliente === '1', lat: null, lng: null,
+    };
+    paradas.push(p);     // push antes do await evita duplicação por clique rápido
+    render();            // mostra a parada imediatamente
+    await geocodeParada(p);
     render();
     desenharMapa();
   };
@@ -142,7 +159,8 @@
     const body = { nome, vendedor, municipio, uf, paradas };
     const url = rotaSalva ? '/rotas/' + rotaSalva.id : '/rotas';
     const d = await postJson(url, body);
-    if (d && d.id) window.location.href = '/rotas';
+    if (d && d.id) { window.location.href = '/rotas'; }
+    else { alert('Não foi possível salvar a rota. Tente novamente.'); }
   };
 
   // ---------- drag & drop ----------
@@ -150,9 +168,11 @@
     new Sortable(document.getElementById('lista-rota'), {
       handle: '.cursor-move', animation: 150,
       onEnd: () => {
+        const docPartida = paradas[partidaIdx] && paradas[partidaIdx].documento;
         const ordem = Array.from(document.getElementById('lista-rota').children).map(li => li.dataset.documento);
         paradas.sort((a, b) => ordem.indexOf(a.documento) - ordem.indexOf(b.documento));
-        partidaIdx = 0;
+        const np = paradas.findIndex(x => x.documento === docPartida);
+        partidaIdx = np >= 0 ? np : 0;
         render(); desenharMapa();
       },
     });
