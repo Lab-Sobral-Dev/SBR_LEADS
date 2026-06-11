@@ -96,7 +96,12 @@
 
 - **Rotas de Visita** (item "Rotas" no menu) — montagem de rotas de visita por vendedor (visão gestor): tela de 3 colunas (candidatos clientes+prospectos com selo de risco | mapa Leaflet | rota arrastável), ordenação por vizinho mais próximo (função pura no backend), handoff pro Google Maps com quebra em trechos (>10 paradas), rotas salvas/nomeadas (tabelas `rota`/`rota_parada`). Geocode por CEP client-side reusando o cache do Mapa. Novo `app/rotas_service.py` + `app/routers/rotas.py`. 23 testes no service (68 na suíte). Spec/plano em `docs/superpowers/{specs,plans}/2026-06-10-rotas-visita*`
 
+- **Dashboard de Recompra** (`GET /dashboard/recompra`, card no hub) — classifica cada cliente pelo PRÓPRIO ritmo de compra (mediana dos intervalos entre dias distintos de compra): 🟢 em dia (≤ mediana) · 🟡 atrasando (≤ p90) · 🔴 atrasado (> p90) · ⚪ sem padrão (<3 compras). KPIs por faixa + receita dos atrasados (soma do ticket médio dos 🔴) + tabela ordenada pelo índice (dias÷mediana). Filtros vendedor/UF/cidade/faixa, medição até hoje, cache por recorte. Compra efetiva = não-orçamento e situação≠Cancelado; pedidos no mesmo dia = uma compra. Novo `app/recompra_service.py` (`classificar_recompra` pura + `montar_recompra`/`opcoes_recompra`). Spec/plano em `docs/superpowers/{specs,plans}/2026-06-11-recompra*`
+
+- **Fix do botão de sincronizar (Pedido Mobile)** — `frontend.py` chamava `_info_pedido_mobile` inexistente (movida no refactor de navegação 08/06) → 500 no `POST /sync-clientes`, sync parado desde 27/05. `info_pedido_mobile` centralizada em `pedido_mobile.py`; card passou a exibir total de pedidos + pedidos sincronizados na última sync.
+
 **Próximas frentes:**
+- **Recompra → Cross-sell (2ª etapa)** — produtos a oferecer por cliente (o que clientes parecidos compram e ele não; cesta/produtos comprados juntos). Spec própria, a desenhar.
 - **Cockpit Comercial Fase 3** — Realizado vs. meta (exige cadastro de metas; dado/telas novos)
 - **Etapa 6 (infra)** — Deploy VPS Hostinger (Caddy + cron mensal + backup)
 - **Rotas de Visita — evoluções futuras** — login próprio de vendedor, histórico de visitas, autocomplete de município (hoje usa código IBGE)
