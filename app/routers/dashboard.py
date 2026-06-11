@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 import dashboard_service as svc
 import analise_service as svc_analise
+import recompra_service as svc_recompra
 from auth import require_login
 from config import BRT
 from dashboard_filters import FiltrosDashboard
@@ -82,3 +83,47 @@ def dashboard_analise(
         "user": current_user,
         "dados": dados,
     })
+
+
+_cache_recompra: dict = {}  # chave -> (ts, dados)
+
+
+def _dados_recompra_cacheados(db: Session, *, vendedor, cidade, uf, hoje) -> dict:
+    chave = "|".join([vendedor or "", cidade or "", uf or "", hoje.isoformat()])
+    agora = time.monotonic()
+    item = _cache_recompra.get(chave)
+    if item and (agora - item[0]) < _CACHE_TTL_SEGUNDOS:
+        return item[1]
+    dados = svc_recompra.montar_recompra(db, vendedor=vendedor, cidade=cidade, uf=uf, hoje=hoje)
+    _cache_recompra[chave] = (agora, dados)
+    return dados
+
+
+@router.get("/dashboard/recompra", response_class=HTMLResponse)
+def dashboard_recompra(
+    request: Request,
+    current_user: dict = Depends(require_login),
+    db: Session = Depends(get_db),
+):
+    hoje = datetime.now(BRT).date()
+    q = dict(request.query_params)
+    vendedor = q.get("vendedor") or None
+    cidade = q.get("cidade") or None
+    uf = q.get("uf") or None
+    faixa = q.get("faixa") or ""
+
+    dados = _dados_recompra_cacheados(db, vendedor=vendedor, cidade=cidade, uf=uf, hoje=hoje)
+    clientes = dados["clientes"]
+    if faixa:
+        clientes = [c for c in clientes if c["faixa"] == faixa]
+
+    ctx = {
+        "request": request,
+        "user": current_user,
+        "kpis": dados["kpis"],
+        "clientes": clientes,
+        "opcoes": svc_recompra.opcoes_recompra(db),
+        "filtros": {"vendedor": vendedor or "", "cidade": cidade or "", "uf": uf or "", "faixa": faixa},
+    }
+    template = "partials/recompra_paineis.html" if request.headers.get("HX-Request") else "recompra.html"
+    return templates.TemplateResponse(template, ctx)
