@@ -1,21 +1,12 @@
 <!-- KPIs -->
 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-4">
-  <div class="bg-[#16241a] border border-[#2a4a2a] rounded-xl p-3">
-    <div class="text-green-400 text-2xl font-bold">{{ kpis.em_dia }}</div>
-    <div class="text-[#9ca3af] text-xs">🟢 Em dia</div>
+  {% for k in ['em_dia', 'atrasando', 'atrasado', 'sem_padrao'] %}
+  {% set f = faixas[k] %}
+  <div class="{{ f.card }} rounded-xl p-3">
+    <div class="{{ f.cor }} text-2xl font-bold">{{ kpis[k] }}</div>
+    <div class="text-[#9ca3af] text-xs">{{ f.emoji }} {{ f.label }}</div>
   </div>
-  <div class="bg-[#241f10] border border-[#4a4424] rounded-xl p-3">
-    <div class="text-yellow-400 text-2xl font-bold">{{ kpis.atrasando }}</div>
-    <div class="text-[#9ca3af] text-xs">🟡 Atrasando</div>
-  </div>
-  <div class="bg-[#241010] border border-[#4a2424] rounded-xl p-3">
-    <div class="text-red-400 text-2xl font-bold">{{ kpis.atrasado }}</div>
-    <div class="text-[#9ca3af] text-xs">🔴 Atrasado</div>
-  </div>
-  <div class="bg-[#1a1a1a] border border-[#333] rounded-xl p-3">
-    <div class="text-[#9ca3af] text-2xl font-bold">{{ kpis.sem_padrao }}</div>
-    <div class="text-[#9ca3af] text-xs">⚪ Sem padrão</div>
-  </div>
+  {% endfor %}
   <div class="bg-[#1f1810] border border-[#4a3a1a] rounded-xl p-3">
     <div class="text-orange-400 text-2xl font-bold">R$ {{ "{:,.0f}".format(kpis.receita_atrasados).replace(",", ".") }}</div>
     <div class="text-[#9ca3af] text-xs">Receita dos atrasados</div>
@@ -45,14 +36,11 @@
         <td class="px-3 py-2 text-right text-[#aaa]">{{ c.ultima_compra.strftime('%d/%m/%y') if c.ultima_compra else '—' }}</td>
         <td class="px-3 py-2 text-right text-[#aaa]">{{ ('~%.0f d' % c.mediana) if c.mediana is not none else '—' }}</td>
         <td class="px-3 py-2 text-right text-[#aaa]">{{ c.dias_sem_comprar if c.dias_sem_comprar is not none else '—' }}</td>
-        <td class="px-3 py-2 text-right font-semibold
-            {% if c.faixa == 'atrasado' %}text-red-400{% elif c.faixa == 'atrasando' %}text-yellow-400{% elif c.faixa == 'em_dia' %}text-green-400{% else %}text-[#666]{% endif %}">
+        <td class="px-3 py-2 text-right font-semibold {{ faixas[c.faixa].cor }}">
           {{ ('%.2f×' % c.indice) if c.indice is not none else '—' }}
         </td>
         <td class="px-3 py-2 text-right text-[#aaa]">R$ {{ "{:,.0f}".format(c.ticket_medio).replace(",", ".") }}</td>
-        <td class="px-3 py-2 text-center">
-          {% if c.faixa == 'atrasado' %}🔴{% elif c.faixa == 'atrasando' %}🟡{% elif c.faixa == 'em_dia' %}🟢{% else %}⚪{% endif %}
-        </td>
+        <td class="px-3 py-2 text-center">{{ faixas[c.faixa].emoji }}</td>
       </tr>
       {% else %}
       <tr><td colspan="8" class="px-3 py-8 text-center text-[#555]">Nenhum cliente para este recorte.</td></tr>

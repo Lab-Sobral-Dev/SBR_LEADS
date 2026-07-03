@@ -42,11 +42,10 @@
     <label class="text-xs text-[#888]">Faixa
       <select name="faixa"
               class="block mt-1 bg-[#222] border border-[#3a3a3a] rounded-lg px-3 py-2 text-sm text-[#ddd]">
-        <option value="" {{ 'selected' if filtros.faixa == '' else '' }}>Todas</option>
-        <option value="atrasado" {{ 'selected' if filtros.faixa == 'atrasado' else '' }}>🔴 Atrasado</option>
-        <option value="atrasando" {{ 'selected' if filtros.faixa == 'atrasando' else '' }}>🟡 Atrasando</option>
-        <option value="em_dia" {{ 'selected' if filtros.faixa == 'em_dia' else '' }}>🟢 Em dia</option>
-        <option value="sem_padrao" {{ 'selected' if filtros.faixa == 'sem_padrao' else '' }}>⚪ Sem padrão</option>
+        <option value="">Todas</option>
+        {% for k in ['atrasado', 'atrasando', 'em_dia', 'sem_padrao'] %}
+        <option value="{{ k }}" {{ 'selected' if filtros.faixa == k else '' }}>{{ faixas[k].emoji }} {{ faixas[k].label }}</option>
+        {% endfor %}
       </select>
     </label>
   </form>

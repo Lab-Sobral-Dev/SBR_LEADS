@@ -139,6 +139,7 @@ def dashboard_recompra(
         # refletem só o conjunto filtrado. Sem faixa, equivale a dados["kpis"].
         "kpis": svc_recompra.calcular_kpis(clientes),
         "clientes": clientes,
+        "faixas": svc_recompra.FAIXAS,  # apresentação (emoji/label/cor/card) das faixas
     }
 
     # Troca de filtro é HX-Request e só re-renderiza #recompra-paineis (KPIs + tabela);

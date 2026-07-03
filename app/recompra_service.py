@@ -20,6 +20,16 @@ FAIXA_ATRASADO = "atrasado"
 FAIXA_SEM_PADRAO = "sem_padrao"
 MIN_COMPRAS = 3
 
+# Fonte única de verdade da apresentação de cada faixa (emoji, rótulo, cor do
+# texto e fundo/borda do card de KPI). Os templates (select, cards e tabela)
+# consomem daqui — adicionar/renomear faixa é uma mudança em um lugar só.
+FAIXAS = {
+    FAIXA_EM_DIA:     {"emoji": "🟢", "label": "Em dia",     "cor": "text-green-400",  "card": "bg-[#16241a] border border-[#2a4a2a]"},
+    FAIXA_ATRASANDO:  {"emoji": "🟡", "label": "Atrasando",  "cor": "text-yellow-400", "card": "bg-[#241f10] border border-[#4a4424]"},
+    FAIXA_ATRASADO:   {"emoji": "🔴", "label": "Atrasado",   "cor": "text-red-400",    "card": "bg-[#241010] border border-[#4a2424]"},
+    FAIXA_SEM_PADRAO: {"emoji": "⚪", "label": "Sem padrão", "cor": "text-[#9ca3af]",  "card": "bg-[#1a1a1a] border border-[#333]"},
+}
+
 
 def _mediana(xs: list[float]) -> float:
     s = sorted(xs)
