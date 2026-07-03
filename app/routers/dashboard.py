@@ -11,7 +11,7 @@ import analise_service as svc_analise
 import recompra_service as svc_recompra
 from auth import require_login
 from config import BRT
-from dashboard_filters import FiltrosDashboard
+from dashboard_filters import FiltrosDashboard, _limpar
 from database import get_db
 
 router = APIRouter()
@@ -122,10 +122,10 @@ def dashboard_recompra(
 ):
     hoje = datetime.now(BRT).date()
     q = dict(request.query_params)
-    vendedor = q.get("vendedor") or None
-    cidade = q.get("cidade") or None
-    uf = q.get("uf") or None
-    faixa = q.get("faixa") or ""
+    vendedor = _limpar(q.get("vendedor"))  # strip + vazio->None (mesma norma do dashboard)
+    cidade = _limpar(q.get("cidade"))
+    uf = _limpar(q.get("uf"))
+    faixa = (q.get("faixa") or "").strip()
 
     dados = _dados_recompra_cacheados(db, vendedor=vendedor, cidade=cidade, uf=uf, hoje=hoje)
     clientes = dados["clientes"]

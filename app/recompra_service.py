@@ -9,8 +9,10 @@ ainda é "normal" para ele.
 """
 from datetime import date
 
-from sqlalchemy import text  # usado pelos helpers de banco (montar_recompra/opcoes_recompra)
-from sqlalchemy.orm import Session  # idem
+from sqlalchemy import text  # usado por montar_recompra (query de agregação)
+from sqlalchemy.orm import Session
+
+from database import valores_distintos
 
 FAIXA_EM_DIA = "em_dia"
 FAIXA_ATRASANDO = "atrasando"
@@ -190,18 +192,10 @@ def opcoes_recompra(db: Session) -> dict:
     uma compra efetiva — para que nenhuma opção do dropdown leve a um recorte
     vazio. Valores são TRIM-ados (casam com a comparação TRIM de montar_recompra).
     """
-    def _distintos(coluna: str) -> list[str]:
-        return db.execute(text(f"""
-            SELECT DISTINCT TRIM(pm.{coluna}) AS x
-            FROM cliente_pedido_mobile pm
-            JOIN pedido_mobile_pedido ped ON ped.cliente_documento = pm.documento
-            WHERE {_CLIENTE_ATIVO} AND {_FILTRO_COMPRA}
-              AND NULLIF(TRIM(pm.{coluna}), '') IS NOT NULL
-            ORDER BY x
-        """)).scalars().all()
-
+    origem = "cliente_pedido_mobile pm JOIN pedido_mobile_pedido ped ON ped.cliente_documento = pm.documento"
+    filtro = f"{_CLIENTE_ATIVO} AND {_FILTRO_COMPRA}"
     return {
-        "vendedores": _distintos("vendedor"),
-        "ufs": _distintos("uf"),
-        "cidades": _distintos("municipio"),
+        "vendedores": list(valores_distintos(db, "pm.vendedor", origem=origem, filtro=filtro)),
+        "ufs": list(valores_distintos(db, "pm.uf", origem=origem, filtro=filtro)),
+        "cidades": list(valores_distintos(db, "pm.municipio", origem=origem, filtro=filtro)),
     }

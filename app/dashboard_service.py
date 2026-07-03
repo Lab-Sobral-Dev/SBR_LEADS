@@ -4,6 +4,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from dashboard_filters import FiltrosDashboard, derivar_comparacao, _shift_meses
+from database import valores_distintos
 
 _NAO_CANCELADO = "UPPER(TRIM(COALESCE(ped.situacao, ''))) <> 'CANCELADO'"
 
@@ -242,19 +243,12 @@ def top_dimensao(db: Session, f: FiltrosDashboard, *, dimensao: str, limite: int
 # ---------------------------------------------------------------- opções e agregador
 
 def opcoes_filtro(db: Session) -> dict:
-    vend = db.execute(text("""
-        SELECT DISTINCT TRIM(vendedor) AS v FROM pedido_mobile_pedido
-        WHERE NULLIF(TRIM(vendedor), '') IS NOT NULL ORDER BY v
-    """)).scalars().all()
-    repr_ = db.execute(text("""
-        SELECT DISTINCT TRIM(representada) AS r FROM pedido_mobile_pedido
-        WHERE NULLIF(TRIM(representada), '') IS NOT NULL ORDER BY r
-    """)).scalars().all()
-    sit = db.execute(text("""
-        SELECT DISTINCT TRIM(situacao) AS s FROM pedido_mobile_pedido
-        WHERE NULLIF(TRIM(situacao), '') IS NOT NULL ORDER BY s
-    """)).scalars().all()
-    return {"vendedores": list(vend), "representadas": list(repr_), "situacoes": list(sit)}
+    origem = "pedido_mobile_pedido"
+    return {
+        "vendedores": list(valores_distintos(db, "vendedor", origem=origem)),
+        "representadas": list(valores_distintos(db, "representada", origem=origem)),
+        "situacoes": list(valores_distintos(db, "situacao", origem=origem)),
+    }
 
 
 def montar_dados(db: Session, f: FiltrosDashboard, *, hoje) -> dict:
