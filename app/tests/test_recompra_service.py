@@ -117,6 +117,16 @@ def test_dedup_dias_distintos_calcula_ritmo():
     assert r["ticket_medio"] == 300.0     # 900 / 3 ocasiões
 
 
+def test_intervalos_minimos_de_um_dia_nao_quebram_indice():
+    # Menor mediana possível: datas distintas coladas (intervalos de 1 dia).
+    # Fixa o invariante de que a divisão do índice nunca é por zero.
+    base = date(2026, 1, 1)
+    datas = [base, base + timedelta(days=1), base + timedelta(days=2)]  # intervalos [1, 1]
+    r = svc.classificar_recompra(datas, base + timedelta(days=5), receita_total=300)
+    assert r["mediana"] == 1.0
+    assert r["indice"] == 3.0  # 3 dias sem comprar / mediana 1
+
+
 def test_sem_compras_retorna_sem_padrao():
     r = svc.classificar_recompra([], date(2026, 3, 1))
     assert r["faixa"] == "sem_padrao"

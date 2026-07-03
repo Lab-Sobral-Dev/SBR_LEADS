@@ -84,11 +84,12 @@ def classificar_recompra(datas: list[date], hoje: date, *, receita_total: float 
     if n < MIN_COMPRAS:
         return resultado
 
+    # Como datas são distintas (sorted(set(...))), todo intervalo é >= 1 dia,
+    # logo mediana >= 1 e a divisão do índice nunca é por zero.
     intervalos = [(datas[i] - datas[i - 1]).days for i in range(1, n)]
     mediana = _mediana(intervalos)
     p90 = _percentil(intervalos, 0.9)
-    mediana_safe = mediana if mediana >= 1 else 1.0
-    indice = dias_sem_comprar / mediana_safe
+    indice = dias_sem_comprar / mediana
 
     if dias_sem_comprar <= mediana:
         faixa = FAIXA_EM_DIA
