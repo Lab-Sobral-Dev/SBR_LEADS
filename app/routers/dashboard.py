@@ -18,32 +18,54 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 _CACHE_TTL_SEGUNDOS = 180
-_cache: dict = {}  # chave_cache -> (ts, dados)
+
+
+class _CacheTTL:
+    """Cache em memória com TTL e poda de expiradas.
+
+    As chaves embutem data/filtros do recorte; sem poda o dicionário cresceria
+    sem limite (ao menos uma entrada nova por dia). A cada escrita removemos as
+    entradas já vencidas, mantendo o tamanho limitado aos recortes acessados
+    dentro da janela de TTL.
+    """
+
+    def __init__(self, ttl_segundos: int = _CACHE_TTL_SEGUNDOS):
+        self._ttl = ttl_segundos
+        self._store: dict = {}  # chave -> (ts, dados)
+
+    def obter(self, chave: str, carregar):
+        agora = time.monotonic()
+        item = self._store.get(chave)
+        if item and (agora - item[0]) < self._ttl:
+            return item[1]
+        dados = carregar()
+        self._store[chave] = (agora, dados)
+        self._podar(agora)
+        return dados
+
+    def _podar(self, agora: float) -> None:
+        vencidas = [k for k, (ts, _) in self._store.items() if agora - ts >= self._ttl]
+        for k in vencidas:
+            del self._store[k]
+
+    def clear(self) -> None:
+        self._store.clear()
+
+
+_cache = _CacheTTL()
+_cache_analise = _CacheTTL()
+_cache_recompra = _CacheTTL()
 
 
 def _dados_cacheados(db: Session, f: FiltrosDashboard, *, hoje) -> dict:
-    chave = f.chave_cache()
-    agora = time.monotonic()
-    item = _cache.get(chave)
-    if item and (agora - item[0]) < _CACHE_TTL_SEGUNDOS:
-        return item[1]
-    dados = svc.montar_dados(db, f, hoje=hoje)
-    _cache[chave] = (agora, dados)
-    return dados
-
-
-_cache_analise: dict = {}  # chave -> (ts, dados)
+    return _cache.obter(f.chave_cache(), lambda: svc.montar_dados(db, f, hoje=hoje))
 
 
 def _dados_analise_cacheados(db: Session, f: FiltrosDashboard, *, criterio: str, cortes_str: str) -> dict:
     chave = "|".join([f.chave_cache(), criterio, cortes_str])
-    agora = time.monotonic()
-    item = _cache_analise.get(chave)
-    if item and (agora - item[0]) < _CACHE_TTL_SEGUNDOS:
-        return item[1]
-    dados = svc_analise.montar_analise(db, f, criterio=criterio, cortes_str=cortes_str)
-    _cache_analise[chave] = (agora, dados)
-    return dados
+    return _cache_analise.obter(
+        chave, lambda: svc_analise.montar_analise(db, f, criterio=criterio, cortes_str=cortes_str)
+    )
 
 
 @router.get("/dashboard", response_class=HTMLResponse)
@@ -85,18 +107,11 @@ def dashboard_analise(
     })
 
 
-_cache_recompra: dict = {}  # chave -> (ts, dados)
-
-
 def _dados_recompra_cacheados(db: Session, *, vendedor, cidade, uf, hoje) -> dict:
     chave = "|".join([vendedor or "", cidade or "", uf or "", hoje.isoformat()])
-    agora = time.monotonic()
-    item = _cache_recompra.get(chave)
-    if item and (agora - item[0]) < _CACHE_TTL_SEGUNDOS:
-        return item[1]
-    dados = svc_recompra.montar_recompra(db, vendedor=vendedor, cidade=cidade, uf=uf, hoje=hoje)
-    _cache_recompra[chave] = (agora, dados)
-    return dados
+    return _cache_recompra.obter(
+        chave, lambda: svc_recompra.montar_recompra(db, vendedor=vendedor, cidade=cidade, uf=uf, hoje=hoje)
+    )
 
 
 @router.get("/dashboard/recompra", response_class=HTMLResponse)
