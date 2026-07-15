@@ -1,6 +1,20 @@
 # Etapas do Projeto
 
-## Etapa 1 — Setup do Ambiente Local ✅ (atual)
+> **Status geral (roadmap original):** Etapas 1–5 concluídas ✅ · Etapa 6 (deploy VPS)
+> pendente 🔜. Além do roadmap, o projeto evoluiu com autenticação JWT, integração
+> Pedido Mobile e os dashboards do Cockpit Comercial e Rotas de Visita — ver
+> [`CLAUDE.md`](CLAUDE.md) para o estado vivo.
+
+| Etapa | Status |
+|---|---|
+| 1 — Setup do ambiente local | ✅ Concluída |
+| 2 — Importação da base CNPJ | ✅ Concluída |
+| 3 — Backend / API REST | ✅ Concluída |
+| 4 — Frontend | ✅ Concluída |
+| 5 — Refinamento local | ✅ Concluída |
+| 6 — Deploy VPS Hostinger | 🔜 Pendente (próxima) |
+
+## Etapa 1 — Setup do Ambiente Local ✅ Concluída
 
 **Objetivo:** Validar que o ambiente Docker está funcionando com Postgres + FastAPI base.
 
@@ -12,13 +26,13 @@
 - README com instruções
 
 **Critérios de conclusão:**
-- [ ] `docker compose up -d --build` funciona sem erro
-- [ ] http://localhost:8000/health retorna `database: connected`
-- [ ] pgAdmin conecta ao Postgres pelo host `postgres`
+- [x] `docker compose up -d --build` funciona sem erro
+- [x] http://localhost:8000/health retorna `database: connected`
+- [x] pgAdmin conecta ao Postgres pelo host `postgres`
 
 ---
 
-## Etapa 2 — Importação da Base da Receita Federal
+## Etapa 2 — Importação da Base da Receita Federal ✅ Concluída
 
 **Objetivo:** Trazer toda a base pública do CNPJ para o Postgres local.
 
@@ -155,7 +169,7 @@ WHERE e.uf = 'PI'
 
 ---
 
-## Etapa 3 — Backend Completo
+## Etapa 3 — Backend Completo ✅ Concluída
 
 **Objetivo:** Expor a busca via API REST.
 
@@ -179,7 +193,7 @@ WHERE e.uf = 'PI'
 
 ---
 
-## Etapa 4 — Frontend
+## Etapa 4 — Frontend ✅ Concluída
 
 **Objetivo:** Interface web amigável.
 
@@ -205,7 +219,7 @@ WHERE e.uf = 'PI'
 
 ---
 
-## Etapa 5 — Refinamento Local
+## Etapa 5 — Refinamento Local ✅ Concluída
 
 - Tratamento de erros e edge cases
 - Mensagens claras quando busca não retorna resultados
@@ -216,24 +230,25 @@ WHERE e.uf = 'PI'
 
 ---
 
-## Etapa 6 — Deploy VPS Hostinger
+## Etapa 6 — Deploy VPS Hostinger 🔜 Pendente (próxima)
 
 **Pré-requisitos:**
-- Etapas 1-5 concluídas
+- Etapas 1-5 concluídas ✅
 - VPS Hostinger contratada (KVM 2 ou superior)
 - Domínio próprio (opcional, mas recomendado)
 
 **Passos:**
 
-1. Criar `docker-compose.prod.yml` que adiciona o Caddy e remove a exposição do Postgres
-2. Criar `Caddyfile` com configuração de HTTPS automático
-3. Documentar processo de deploy em `docs/DEPLOY.md`
-4. Configurar cron na VPS para `etl/update_monthly.py`
-5. Implementar autenticação básica (HTTP Basic ou senha simples)
-6. Configurar backup automático do Postgres
+- [x] Criar `docker-compose.prod.yml` que adiciona o Caddy e remove a exposição do Postgres
+- [x] Criar `Caddyfile` com configuração de HTTPS automático
+- [x] Autenticação — já implementada (JWT via cookie HTTPOnly, papéis admin/usuário), superando a ideia original de HTTP Basic
+- [ ] Provisionar a VPS Hostinger e fazer o primeiro deploy
+- [ ] Documentar o processo de deploy em `docs/DEPLOY.md`
+- [ ] Configurar cron na VPS para `etl/update_monthly.py`
+- [ ] Configurar backup automático do Postgres
 
 **Critério de conclusão:**
-- Sistema acessível via `https://seu-dominio.com`
-- HTTPS funcionando
-- Atualização mensal automatizada
-- Backup configurado
+- [ ] Sistema acessível via `https://seu-dominio.com`
+- [ ] HTTPS funcionando
+- [ ] Atualização mensal automatizada
+- [ ] Backup configurado
