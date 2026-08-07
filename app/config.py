@@ -11,6 +11,21 @@ class Settings(BaseSettings):
     app_env: str = "development"
     secret_key: str = "dev-insecure-change-me-in-production"
 
+    # Protocolo de Acoplamento com o gestao-sbr ("LABSRV-COLOSSUS"). Segredo
+    # compartilhado, recebido fora do repositório. Ausente = /api/auth/sso
+    # responde 503 honesto e o resto do app segue normal.
+    docking_secret: str | None = None
+
+    # Flag `Secure` do cookie de sessão — opt-in por variável própria, NÃO
+    # derivada de `app_env`. Sobre HTTP interno o Secure faz o navegador
+    # descartar o cookie e a pessoa entra em loop de login. Ligar só quando
+    # servir atrás de TLS. Mesma lição paga no SBR-KPIs.
+    session_cookie_secure: bool = False
+
+    # Origem autorizada a embutir este app em iframe (CSP frame-ancestors).
+    # Vazio = não permite embed de lugar nenhum.
+    frame_ancestor: str | None = None
+
     pedido_mobile_base_url: str = "https://pedidomobile.com/webservice/v3"
     pedido_mobile_user: str | None = None
     pedido_mobile_password: str | None = None

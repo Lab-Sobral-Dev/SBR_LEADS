@@ -1,10 +1,13 @@
-from fastapi import APIRouter, Depends, Form, Request
+from fastapi import APIRouter, Depends, Form, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from jose import JWTError, jwt
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
+from acoplamento import resolver_acoplamento
 from auth import (
+    ALGORITHM,
     TOKEN_EXPIRE_HOURS,
     criar_token,
     get_current_user,
@@ -53,7 +56,7 @@ def fazer_login(
         token,
         httponly=True,
         samesite="lax",
-        secure=settings.app_env == "production",
+        secure=settings.session_cookie_secure,
         max_age=TOKEN_EXPIRE_HOURS * 3600,
     )
     return response
@@ -103,4 +106,57 @@ def fazer_trocar_senha(
 def logout():
     response = RedirectResponse("/login", status_code=302)
     response.delete_cookie("access_token")
+    return response
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Protocolo de Acoplamento (gestao-sbr)
+# ─────────────────────────────────────────────────────────────────────────────
+
+@router.get("/api/auth/sso")
+def sso_acoplamento(
+    token: str = Query(..., description="JWT curto emitido pelo gestao-sbr"),
+    db: Session = Depends(get_db),
+):
+    """Entrada por SSO a partir do gestao-sbr, sem tela de login.
+
+    O casco emite um JWT de 60 segundos assinado com o segredo compartilhado, já
+    tendo verificado a permissão de quem clicou. Aqui só validamos a assinatura,
+    materializamos a conta local e devolvemos o mesmo cookie de sessão que o
+    login normal emite — nada no resto do app precisa saber que a pessoa entrou
+    por aqui.
+
+    Segredo ausente devolve 503 em vez de 500: é configuração faltando, não
+    defeito, e o login local continua funcionando.
+    """
+    if not settings.docking_secret:
+        raise HTTPException(status_code=503, detail="Acoplamento não configurado neste ambiente.")
+
+    try:
+        payload = jwt.decode(token, settings.docking_secret, algorithms=[ALGORITHM])
+    except JWTError:
+        # Sem detalhe do motivo de propósito: expirado, assinatura inválida e
+        # malformado são a mesma coisa para quem está do lado de fora.
+        raise HTTPException(status_code=401, detail="Token de acoplamento inválido ou expirado.")
+
+    email = (payload.get("email") or "").strip()
+    if not email:
+        raise HTTPException(status_code=400, detail="Token de acoplamento sem e-mail.")
+
+    resultado = resolver_acoplamento(db, email=email, nome=payload.get("nome") or email)
+
+    if resultado.acao == "login":
+        # Conta desativada aqui dentro. Cai no login local em vez de entrar: a
+        # decisão do admin deste produto vale sobre a permissão do casco.
+        return RedirectResponse("/login", status_code=302)
+
+    response = RedirectResponse("/", status_code=302)
+    response.set_cookie(
+        "access_token",
+        criar_token(resultado.email, resultado.role),
+        httponly=True,
+        samesite="lax",
+        secure=settings.session_cookie_secure,
+        max_age=TOKEN_EXPIRE_HOURS * 3600,
+    )
     return response
