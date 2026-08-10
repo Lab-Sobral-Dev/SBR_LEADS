@@ -8,6 +8,7 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy import text
 
 from auth import NotAdminException, NotAuthenticatedException, TrocarSenhaException, hash_senha
+from config import settings
 from database import engine
 from routers.admin import router as admin_router
 from routers.api import router as api_router
@@ -184,6 +185,24 @@ app = FastAPI(
     description="Ferramenta de prospecção de leads via base pública da Receita Federal",
     lifespan=lifespan,
 )
+
+
+@app.middleware("http")
+async def csp_frame_ancestors(request: Request, call_next):
+    """CSP frame-ancestors do Protocolo de Acoplamento (gestao-sbr, §3 item 4).
+
+    Aplicado globalmente, não só na rota de SSO: depois do redirect pós-login
+    o navegador carrega `/` (ou o dashboard) dentro do mesmo iframe, e é essa
+    resposta que precisa do header, não o handshake em si.
+
+    `frame_ancestor` ausente = não seta header nenhum — mesmo comportamento
+    honesto do 503 em /api/auth/sso quando falta configuração, em vez de
+    bloquear embed nenhum por omissão.
+    """
+    response = await call_next(request)
+    if settings.frame_ancestor:
+        response.headers["Content-Security-Policy"] = f"frame-ancestors 'self' {settings.frame_ancestor}"
+    return response
 
 
 @app.exception_handler(NotAuthenticatedException)
