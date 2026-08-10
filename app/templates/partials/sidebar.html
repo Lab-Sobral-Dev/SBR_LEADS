@@ -10,7 +10,7 @@
 <aside id="sidebar"
        class="fixed lg:static inset-y-0 left-0 z-40 w-56 flex-shrink-0 bg-[#0f0f0f] border-r border-[#2e2e2e]
               flex flex-col -translate-x-full lg:translate-x-0 transition-transform duration-200">
-  <a href="/inicio" class="flex items-center gap-2 px-4 py-4">
+  <a href="/inicio" class="oculto-embed flex items-center gap-2 px-4 py-4">
     <span class="text-orange-500 font-black text-lg tracking-tight">SBR</span>
     <span class="text-white font-light text-lg tracking-widest">Leads</span>
   </a>
@@ -29,7 +29,7 @@
     {{ item('/configuracoes', '⚙️', 'Configurações', path == '/configuracoes') }}
   </nav>
 
-  <div class="border-t border-[#1e1e1e] p-3 flex items-center justify-between">
+  <div class="oculto-embed border-t border-[#1e1e1e] p-3 flex items-center justify-between">
     <span class="text-xs text-[#777] truncate">{{ user.nome }}</span>
     <a href="/logout" class="text-xs text-[#555] hover:text-[#999]">Sair</a>
   </div>

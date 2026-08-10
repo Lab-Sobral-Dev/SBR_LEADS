@@ -53,6 +53,13 @@
 
   <style>
     body { background-color: #0f0f0f; color: #e5e5e5; }
+
+    /* Protocolo de Acoplamento (gestao-sbr): embutido em iframe esconde a
+       identidade local (marca, nome do usuário, "Sair"), mas NÃO a navegação
+       real — os links de <nav> continuam visíveis. `.embutido` é setado por
+       script inline no início do <body>, antes de qualquer elemento marcado
+       ser pintado, para não piscar. */
+    .embutido .oculto-embed { display: none !important; }
     #mapa { height: 460px; }
     .htmx-indicator { display: none; }
     .htmx-request .htmx-indicator { display: inline-block; }
@@ -109,6 +116,11 @@
   </style>
 </head>
 <body class="min-h-screen">
+<script>
+  // Antes de qualquer elemento marcado `.oculto-embed` ser pintado, pra não
+  // piscar. Ver Protocolo de Acoplamento §3 item 4 (gestao-sbr).
+  if (window.self !== window.top) document.documentElement.classList.add('embutido')
+</script>
 {% if user is defined and user %}
   <div class="flex min-h-screen">
     {% include "partials/sidebar.html" %}
@@ -117,8 +129,8 @@
         <button type="button" aria-label="Menu"
                 onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')"
                 class="text-[#999] text-xl leading-none">&#9776;</button>
-        <span class="text-orange-500 font-black tracking-tight">SBR</span>
-        <span class="text-white font-light tracking-widest">Leads</span>
+        <span class="oculto-embed text-orange-500 font-black tracking-tight">SBR</span>
+        <span class="oculto-embed text-white font-light tracking-widest">Leads</span>
       </div>
       <main class="flex-1 p-5">
 {% else %}
