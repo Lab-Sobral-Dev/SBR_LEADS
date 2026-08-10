@@ -43,6 +43,11 @@ services:
       PEDIDO_MOBILE_BASE_URL: ${PEDIDO_MOBILE_BASE_URL:-https://pedidomobile.com/webservice/v3}
       PEDIDO_MOBILE_USER: ${PEDIDO_MOBILE_USER:-}
       PEDIDO_MOBILE_PASSWORD: ${PEDIDO_MOBILE_PASSWORD:-}
+      # Protocolo de Acoplamento (gestao-sbr) — var presente só no .env não
+      # chega ao container sem estar listada aqui.
+      DOCKING_SECRET: ${DOCKING_SECRET:-}
+      FRAME_ANCESTOR: ${FRAME_ANCESTOR:-}
+      SESSION_COOKIE_SECURE: ${SESSION_COOKIE_SECURE:-false}
     ports:
       - "8000:8000"
     volumes:
