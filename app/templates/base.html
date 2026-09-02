@@ -119,7 +119,15 @@
 <script>
   // Antes de qualquer elemento marcado `.oculto-embed` ser pintado, pra não
   // piscar. Ver Protocolo de Acoplamento §3 item 4 (gestao-sbr).
-  if (window.self !== window.top) document.documentElement.classList.add('embutido')
+  if (window.self !== window.top) {
+    document.documentElement.classList.add('embutido')
+  } else {
+    // Reforço client-side ao gate do middleware (Sec-Fetch-Dest: document) —
+    // achado ao vivo num Firefox real que não manda esse header, deixando a
+    // tela vazar pra acesso direto. window.self !== window.top não depende
+    // de nenhum header.
+    window.location.replace('https://gestao.laboratoriosobral.com.br/comercial/demandas/leads')
+  }
 </script>
 {% if user is defined and user %}
   <div class="flex min-h-screen">
