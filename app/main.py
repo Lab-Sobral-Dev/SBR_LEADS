@@ -4,7 +4,7 @@ SBR Leads — API principal
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import RedirectResponse
 from sqlalchemy import text
 
 from auth import NotAdminException, NotAuthenticatedException, TrocarSenhaException, hash_senha
@@ -187,51 +187,20 @@ app = FastAPI(
 )
 
 
-def _pagina_abra_no_gestao(url_gestao: str) -> str:
-    return f"""<!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SBR Leads | Acesso</title>
-<style>
-  *{{box-sizing:border-box;margin:0;padding:0}}
-  html,body{{height:100%}}
-  body{{
-    font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
-    background-color:#0f0f0f;color:#f0f0f0;
-    display:flex;align-items:center;justify-content:center;
-    text-align:center;padding:0 24px;
-  }}
-  .card{{max-width:420px}}
-  h1{{font-size:28px;font-weight:800;color:#f97316;letter-spacing:0.5px;margin-bottom:12px}}
-  p{{color:rgba(255,255,255,0.65);font-size:15px;line-height:1.5;margin-bottom:28px}}
-  a.btn{{
-    display:inline-block;padding:14px 32px;border-radius:8px;
-    background:linear-gradient(135deg,#f97316 0%,#ea580c 100%);
-    color:#fff;font-weight:700;text-decoration:none;letter-spacing:0.5px;
-  }}
-</style></head>
-<body>
-  <div class="card">
-    <h1>Abra direto no Gestão SBR</h1>
-    <p>O SBR Leads agora faz parte do Gestão SBR — acesse por lá, sem precisar logar de novo aqui.</p>
-    <a class="btn" href="{url_gestao}">Abrir no Gestão SBR</a>
-  </div>
-</body></html>"""
-
-
 @app.middleware("http")
 async def abra_no_gestao(request: Request, call_next):
     """Regra: produto externo entra por dentro, não por link (PROTOCOLO-DE-
     ACOPLAMENTO.md, sbrgestao). Navegação de topo real de browser (fora do
-    iframe do Gestão) mostra um aviso em vez de seguir o fluxo normal de
-    login. Dentro do iframe o browser manda `Sec-Fetch-Dest: iframe`, não
-    `document` — passa direto, inclusive num F5 dentro do iframe (o header
-    reflete o destino da navegação, não como ela foi disparada). Só GET:
-    o form de login deste app é um POST nativo (`<form method="post">`,
-    também `Sec-Fetch-Dest: document`) e não pode ser bloqueado aqui.
+    iframe do Gestão) redireciona direto pro Gestão, sem página intermediária
+    — nenhum link avulso deve parecer um destino válido por si só. Dentro do
+    iframe o browser manda `Sec-Fetch-Dest: iframe`, não `document` — passa
+    direto, inclusive num F5 dentro do iframe (o header reflete o destino da
+    navegação, não como ela foi disparada). Só GET: o form de login deste app
+    é um POST nativo (`<form method="post">`, também `Sec-Fetch-Dest:
+    document`) e não pode ser bloqueado aqui.
     """
     if request.method == "GET" and request.headers.get("sec-fetch-dest") == "document":
-        return HTMLResponse(_pagina_abra_no_gestao(settings.gestao_url_sbr_leads))
+        return RedirectResponse(url=settings.gestao_url_sbr_leads, status_code=302)
     return await call_next(request)
 
 
