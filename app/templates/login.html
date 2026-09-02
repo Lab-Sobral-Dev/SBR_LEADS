@@ -18,6 +18,15 @@
     }
   </script>
   <style>body { background-color: #0f0f0f; }</style>
+  <script>
+    // Regra: produto externo entra por dentro, não por link (Protocolo de
+    // Acoplamento, sbrgestao). Reforço client-side ao gate do middleware
+    // (Sec-Fetch-Dest: document) — achado ao vivo num Firefox real que não
+    // manda esse header. window.self !== window.top não depende de header.
+    if (window.self === window.top) {
+      window.location.replace('https://gestao.laboratoriosobral.com.br/comercial/demandas/leads')
+    }
+  </script>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
   <div class="w-full max-w-sm">
