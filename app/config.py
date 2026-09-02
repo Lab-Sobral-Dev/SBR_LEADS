@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     # Vazio = não permite embed de lugar nenhum.
     frame_ancestor: str | None = None
 
+    # Pra onde redirecionar quem acessar este sistema direto (fora do iframe
+    # do Gestão) — mostrado como aviso "Abra direto no Gestão SBR".
+    gestao_url_sbr_leads: str = "https://gestao.laboratoriosobral.com.br/comercial/demandas/leads"
+
     pedido_mobile_base_url: str = "https://pedidomobile.com/webservice/v3"
     pedido_mobile_user: str | None = None
     pedido_mobile_password: str | None = None
