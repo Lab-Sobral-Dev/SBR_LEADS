@@ -15,7 +15,7 @@
 ## Decisões Já Tomadas (Não Reabrir Sem Discussão)
 
 ### Fonte de Dados
-- **Escolhida:** Base pública de CNPJ da Receita Federal (download mensal de [dados.gov.br](https://dados.gov.br/dados/conjuntos-dados/cadastro-nacional-da-pessoa-juridica---cnpj))
+- **Escolhida:** Base pública de CNPJ da Receita Federal (download mensal em [arquivos.receitafederal.gov.br](https://arquivos.receitafederal.gov.br/index.php/s/YggdBLfdninEJX9))
 - **Descartadas:** Google Places API (custo por chamada), web scraping (frágil e ilegal), APIs CNPJ comerciais (planos gratuitos não permitem listar por cidade+CNAE)
 - **Motivo:** Cobertura muito superior (todas as empresas formais, não só as cadastradas no Google), CNPJ disponível para cruzamento com base de clientes futura, zero custo, dados oficiais
 
