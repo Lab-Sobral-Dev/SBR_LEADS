@@ -20,14 +20,15 @@ FAIXA_ATRASADO = "atrasado"
 FAIXA_SEM_PADRAO = "sem_padrao"
 MIN_COMPRAS = 3
 
-# Fonte única de verdade da apresentação de cada faixa (emoji, rótulo, cor do
-# texto e fundo/borda do card de KPI). Os templates (select, cards e tabela)
-# consomem daqui — adicionar/renomear faixa é uma mudança em um lugar só.
+# Fonte única de verdade da apresentação de cada faixa (indicador, rótulo, cor
+# do texto e fundo/borda do card de KPI). Os templates (select, cards e
+# tabela) consomem daqui — adicionar/renomear faixa é uma mudança em um lugar só.
+# "dot": cor do indicador redondo monocromático (nada de emoji colorido).
 FAIXAS = {
-    FAIXA_EM_DIA:     {"emoji": "🟢", "label": "Em dia",     "cor": "text-green-700",  "card": "bg-green-50 border border-green-200"},
-    FAIXA_ATRASANDO:  {"emoji": "🟡", "label": "Atrasando",  "cor": "text-yellow-800", "card": "bg-yellow-50 border border-yellow-200"},
-    FAIXA_ATRASADO:   {"emoji": "🔴", "label": "Atrasado",   "cor": "text-red-700",    "card": "bg-red-50 border border-red-200"},
-    FAIXA_SEM_PADRAO: {"emoji": "⚪", "label": "Sem padrão", "cor": "text-[#6E6E6E]",  "card": "bg-[#F4F4F4] border border-[#E3E3E3]"},
+    FAIXA_EM_DIA:     {"dot": "bg-green-600",  "label": "Em dia",     "cor": "text-green-700",  "card": "bg-green-50 border border-green-200"},
+    FAIXA_ATRASANDO:  {"dot": "bg-yellow-500", "label": "Atrasando",  "cor": "text-yellow-800", "card": "bg-yellow-50 border border-yellow-200"},
+    FAIXA_ATRASADO:   {"dot": "bg-red-600",    "label": "Atrasado",   "cor": "text-red-700",    "card": "bg-red-50 border border-red-200"},
+    FAIXA_SEM_PADRAO: {"dot": "bg-[#B3B3B3]",  "label": "Sem padrão", "cor": "text-[#6E6E6E]",  "card": "bg-[#F4F4F4] border border-[#E3E3E3]"},
 }
 
 

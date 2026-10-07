@@ -16,7 +16,7 @@
     <div class="min-w-0">
       <div class="text-[#262626] truncate">
         {{ c.nome }}
-        {% if c.em_risco %}<span class="ml-1 text-xs text-red-700">🔴 em risco</span>{% endif %}
+        {% if c.em_risco %}<span class="ml-1 inline-flex items-center gap-1 text-xs text-red-700"><span class="w-1.5 h-1.5 rounded-full bg-red-600 inline-block"></span>em risco</span>{% endif %}
       </div>
       <div class="text-xs text-[#6E6E6E]">
         {% if c.eh_cliente %}Cliente{% if c.vendedor %} · {{ c.vendedor }}{% endif %}{% else %}Prospecto{% endif %}

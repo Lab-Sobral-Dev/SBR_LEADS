@@ -4,7 +4,7 @@
   {% set f = faixas[k] %}
   <div class="{{ f.card }} rounded-xl p-3">
     <div class="{{ f.cor }} text-2xl font-bold">{{ kpis[k] }}</div>
-    <div class="text-[#6E6E6E] text-xs">{{ f.emoji }} {{ f.label }}</div>
+    <div class="text-[#6E6E6E] text-xs flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full {{ f.dot }} inline-block"></span>{{ f.label }}</div>
   </div>
   {% endfor %}
   <div class="bg-orange-50 border border-orange-200 rounded-xl p-3">
@@ -40,7 +40,7 @@
           {{ ('%.2f×' % c.indice) if c.indice is not none else '—' }}
         </td>
         <td class="px-3 py-2 text-right text-[#404040]">R$ {{ "{:,.0f}".format(c.ticket_medio).replace(",", ".") }}</td>
-        <td class="px-3 py-2 text-center">{{ faixas[c.faixa].emoji }}</td>
+        <td class="px-3 py-2 text-center"><span class="w-2 h-2 rounded-full {{ faixas[c.faixa].dot }} inline-block" title="{{ faixas[c.faixa].label }}"></span></td>
       </tr>
       {% else %}
       <tr><td colspan="8" class="px-3 py-8 text-center text-[#9A9A9A]">Nenhum cliente para este recorte.</td></tr>

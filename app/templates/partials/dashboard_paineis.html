@@ -41,7 +41,10 @@
       <div class="p-4 h-72"><canvas id="chartSerie"></canvas></div>
     </div>
     <div class="lg:col-span-2 bg-white rounded-xl border border-[#E3E3E3]">
-      <div class="text-sm font-semibold text-[#262626] px-5 py-3 border-b border-[#E3E3E3]">🏆 Ranking de vendedores</div>
+      <div class="text-sm font-semibold text-[#262626] px-5 py-3 border-b border-[#E3E3E3] flex items-center gap-2">
+        <svg class="w-4 h-4 text-[#9A9A9A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v3a5 5 0 0 1-10 0V4z"/><path d="M7 5H4.5A2.5 2.5 0 0 0 5 10"/><path d="M17 5h2.5A2.5 2.5 0 0 1 19 10"/><path d="M12 12v4"/><path d="M8.5 20h7l-1-3h-5l-1 3z"/></svg>
+        Ranking de vendedores
+      </div>
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead class="bg-[#FAFAFA]"><tr>
@@ -71,7 +74,10 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <div class="bg-white rounded-xl border border-[#E3E3E3]">
       <div class="text-sm font-semibold text-[#262626] px-5 py-3 border-b border-[#E3E3E3] flex items-center gap-3 flex-wrap">
-        <span>⚠️ Clientes em risco</span>
+        <span class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-[#9A9A9A]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3z"/><path d="M12 9.5v4.5"/><circle cx="12" cy="17" r=".6" fill="currentColor" stroke="none"/></svg>
+          Clientes em risco
+        </span>
         {% set rc = dados.risco.contagem %}
         <span class="text-xs px-2 py-0.5 rounded bg-green-500/10 text-green-700 border border-green-500/25">{{ rc.leve }} leve</span>
         <span class="text-xs px-2 py-0.5 rounded bg-yellow-500/15 text-yellow-800 border border-yellow-500/30">{{ rc.medio }} médio</span>

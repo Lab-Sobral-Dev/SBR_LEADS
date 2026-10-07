@@ -85,7 +85,7 @@
       li.innerHTML =
         '<span class="cursor-move text-[#9A9A9A]">⠿</span>' +
         '<span class="text-[#6E6E6E] w-5 text-center">' + (i + 1) + '</span>' +
-        '<span class="flex-1 truncate text-[#262626]">' + (i === partidaIdx ? '🏁 ' : '') + esc(p.nome) + '</span>' +
+        '<span class="flex-1 truncate text-[#262626]">' + (i === partidaIdx ? '<svg class="inline w-3 h-3 -mt-0.5 mr-1 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v18"/><path d="M5 4h12l-2 4 2 4H5"/></svg>' : '') + esc(p.nome) + '</span>' +
         '<button class="text-[#6E6E6E] hover:text-orange-500 text-xs" title="Definir como partida">↑</button>' +
         '<button class="text-[#6E6E6E] hover:text-red-700 text-xs" title="Remover">✕</button>';
       const [, , , btnPart, btnRem] = li.children;
