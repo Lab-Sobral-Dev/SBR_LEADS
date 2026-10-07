@@ -1,6 +1,5 @@
 {% set path = request.url.path %}
 {% set ICONES = {
-  'inicio': '<svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9h5v-5h2v5h5v-9"/></svg>',
   'busca': '<svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.3" y2="16.3"/></svg>',
   'mapa': '<svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.3"/></svg>',
   'dashboards': '<svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7.5" height="7.5" rx="1.6"/><rect x="13" y="3.5" width="7.5" height="7.5" rx="1.6"/><rect x="3.5" y="13" width="7.5" height="7.5" rx="1.6"/><rect x="13" y="13" width="7.5" height="7.5" rx="1.6"/></svg>',
@@ -19,7 +18,7 @@
 <aside id="sidebar"
        class="fixed lg:static inset-y-0 left-0 z-40 w-60 flex-shrink-0 bg-white border-r border-[#E3E3E3]
               flex flex-col -translate-x-full lg:translate-x-0 transition-transform duration-200">
-  <a href="/inicio" class="oculto-embed flex items-center gap-2.5 px-4 py-4 border-b border-[#F0F0F0]">
+  <a href="/" class="oculto-embed flex items-center gap-2.5 px-4 py-4 border-b border-[#F0F0F0]">
     <span class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold text-base"
           style="background:linear-gradient(135deg,#FF9A4D,#FB6602);box-shadow:0 2px 6px rgba(251,102,2,0.35)">S</span>
     <span class="leading-tight">
@@ -29,7 +28,6 @@
   </a>
 
   <nav class="flex-1 px-2.5 py-3 space-y-1 overflow-y-auto">
-    {{ item('/inicio', 'inicio', 'Início', path == '/inicio') }}
     {{ item('/', 'busca', 'Busca de Leads', path == '/') }}
     {{ item('/mapa', 'mapa', 'Mapa', path == '/mapa') }}
     {{ item('/dashboards', 'dashboards', 'Dashboards', path.startswith('/dashboard')) }}
