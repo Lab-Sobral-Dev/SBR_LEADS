@@ -73,7 +73,7 @@
 **O que já está pronto:**
 
 - **Etapa 1 (setup Docker)** — `docker-compose.yml`, FastAPI base, pgAdmin, `.env.example`
-- **Etapa 2 (importação CNPJ)** — base da Receita Federal importada (segmento `farmacia` ativo: 128k estabelecimentos + 97k empresas)
+- **Etapa 2 (importação CNPJ)** — base da Receita Federal importada (segmento `farmacia` ativo: 120k estabelecimentos + 90k empresas, mês de referência 2026-09)
 - **Etapa 3 (API REST)** — endpoints `/api/buscar`, `/api/exportar.csv`, `/api/exportar.xlsx`, `/api/ufs`, `/api/municipios`, `/api/cnaes`, `/api/stats`
 - **Etapa 4 (frontend)** — HTMX + Jinja2 + TailwindCSS, mapa Leaflet, autocomplete CNAE, dark theme
 - **Integração Pedido Mobile** — sync de clientes via API (`POST /sync-clientes`), badge "Cliente • <vendedor>" na listagem, filtro `status_cliente`, colunas extras nos exports
