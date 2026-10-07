@@ -1,27 +1,27 @@
 {% if resultado.total == 0 %}
-<div class="bg-[#171717] rounded-xl border border-[#2e2e2e] p-12 text-center text-[#555]">
+<div class="bg-white rounded-xl border border-[#E3E3E3] p-12 text-center text-[#9A9A9A]">
   <svg class="w-10 h-10 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
       d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
   </svg>
-  <p class="font-medium text-[#666]">Nenhum resultado encontrado</p>
-  <p class="text-sm mt-1 text-[#555]">Tente ajustar os filtros</p>
+  <p class="font-medium text-[#9A9A9A]">Nenhum resultado encontrado</p>
+  <p class="text-sm mt-1 text-[#B3B3B3]">Tente ajustar os filtros</p>
 </div>
 
 {% else %}
 
 <!-- Cabeçalho dos resultados -->
-<div class="bg-[#171717] rounded-xl border border-[#2e2e2e] p-4">
+<div class="bg-white rounded-xl border border-[#E3E3E3] p-4">
   <div class="flex items-center justify-between flex-wrap gap-3">
     <div>
-      <span class="font-semibold text-white">{{ "{:,}".format(resultado.total).replace(",", ".") }}</span>
-      <span class="text-[#888] text-sm"> resultado{{ 's' if resultado.total != 1 else '' }} encontrado{{ 's' if resultado.total != 1 else '' }}</span>
-      <span class="text-[#555] text-xs ml-2">— página {{ resultado.page }} de {{ resultado.pages }}</span>
+      <span class="font-semibold text-[#262626]">{{ "{:,}".format(resultado.total).replace(",", ".") }}</span>
+      <span class="text-[#6E6E6E] text-sm"> resultado{{ 's' if resultado.total != 1 else '' }} encontrado{{ 's' if resultado.total != 1 else '' }}</span>
+      <span class="text-[#9A9A9A] text-xs ml-2">— página {{ resultado.page }} de {{ resultado.pages }}</span>
     </div>
     <div class="flex items-center gap-3 flex-wrap">
       <!-- Ordenação -->
       <div class="flex items-center gap-1.5">
-        <svg class="w-3.5 h-3.5 text-[#555]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-3.5 h-3.5 text-[#9A9A9A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/>
         </svg>
@@ -33,7 +33,7 @@
                 hx-trigger="change"
                 hx-push-url="true"
                 hx-indicator="#spinner"
-                class="text-xs rounded-lg bg-[#222] border border-[#3a3a3a] px-2 py-1.5 text-[#ccc] focus:outline-none focus:border-orange-500 transition-colors cursor-pointer">
+                class="text-xs rounded-lg bg-white border border-[#E3E3E3] px-2 py-1.5 text-[#404040] focus:outline-none focus:border-orange-500 transition-colors cursor-pointer">
           <option value="razao_social_asc"    {% if ordenar_atual == 'razao_social_asc'    %}selected{% endif %}>Nome (A → Z)</option>
           <option value="razao_social_desc"   {% if ordenar_atual == 'razao_social_desc'   %}selected{% endif %}>Nome (Z → A)</option>
           <option value="capital_desc"        {% if ordenar_atual == 'capital_desc'        %}selected{% endif %}>Maior capital social</option>
@@ -46,11 +46,11 @@
       </div>
       <div class="flex gap-2">
         <a href="/mapa?{{ querystring }}"
-           class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-[#3a3a3a] text-[#aaa] hover:border-orange-500 hover:text-orange-500 transition-colors">
+           class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-[#E3E3E3] text-[#595959] hover:border-orange-500 hover:text-orange-500 transition-colors">
           🗺️ Ver no mapa
         </a>
         <button onclick="exportar('csv')"
-                class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-[#3a3a3a] text-[#aaa] hover:border-orange-500 hover:text-orange-500 transition-colors">
+                class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-[#E3E3E3] text-[#595959] hover:border-orange-500 hover:text-orange-500 transition-colors">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -58,7 +58,7 @@
           CSV
         </button>
         <button onclick="exportar('xlsx')"
-                class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-[#3a3a3a] text-[#aaa] hover:border-orange-500 hover:text-orange-500 transition-colors">
+                class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-[#E3E3E3] text-[#595959] hover:border-orange-500 hover:text-orange-500 transition-colors">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -73,26 +73,26 @@
 {% include "partials/busca_cards.html" %}
 
 <!-- Tabela -->
-<div class="bg-[#171717] rounded-xl border border-[#2e2e2e] overflow-x-auto">
+<div class="bg-white rounded-xl border border-[#E3E3E3] overflow-x-auto">
   <table class="w-full text-sm">
-    <thead class="bg-[#111] border-b border-[#2e2e2e]">
+    <thead class="bg-[#FAFAFA] border-b border-[#E3E3E3]">
       <tr>
-        <th class="px-4 py-3 text-left text-xs font-semibold text-[#666] uppercase tracking-wide">Empresa</th>
-        <th class="px-4 py-3 text-left text-xs font-semibold text-[#666] uppercase tracking-wide">Endereço</th>
-        <th class="px-4 py-3 text-left text-xs font-semibold text-[#666] uppercase tracking-wide">Contato</th>
-        <th class="px-4 py-3 text-left text-xs font-semibold text-[#666] uppercase tracking-wide">Porte</th>
+        <th class="px-4 py-3 text-left text-xs font-semibold text-[#6E6E6E] uppercase tracking-wide">Empresa</th>
+        <th class="px-4 py-3 text-left text-xs font-semibold text-[#6E6E6E] uppercase tracking-wide">Endereço</th>
+        <th class="px-4 py-3 text-left text-xs font-semibold text-[#6E6E6E] uppercase tracking-wide">Contato</th>
+        <th class="px-4 py-3 text-left text-xs font-semibold text-[#6E6E6E] uppercase tracking-wide">Porte</th>
       </tr>
     </thead>
-    <tbody class="divide-y divide-[#222]">
+    <tbody class="divide-y divide-[#F0F0F0]">
       {% for lead in resultado.items %}
-      <tr data-cnpj="{{ lead.cnpj }}" class="hover:bg-[#1a1a1a] transition-colors cursor-pointer">
+      <tr data-cnpj="{{ lead.cnpj }}" class="hover:bg-[#FAFAFA] transition-colors cursor-pointer">
         <td class="px-4 py-3">
           <div class="flex items-center gap-2 flex-wrap">
-            <div class="font-medium text-white truncate max-w-[200px]" title="{{ lead.razao_social }}">
+            <div class="font-medium text-[#262626] truncate max-w-[200px]" title="{{ lead.razao_social }}">
               {{ lead.nome_fantasia or lead.razao_social or '—' }}
             </div>
             {% if lead.eh_cliente %}
-            <span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-semibold bg-orange-500/15 text-orange-400 border border-orange-500/30 uppercase tracking-wide"
+            <span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-semibold bg-orange-500/12 text-orange-700 border border-orange-500/30 uppercase tracking-wide"
                   title="Cliente já cadastrado{% if lead.vendedor %} — Vendedor: {{ lead.vendedor }}{% endif %}">
               <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
@@ -100,50 +100,50 @@
               Cliente{% if lead.vendedor %} • {{ lead.vendedor }}{% endif %}
             </span>
             {% if lead.ultima_compra_em %}
-            <div class="text-[10px] text-[#888] mt-0.5 flex items-center gap-1">
-              <svg class="w-2.5 h-2.5 text-orange-500/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="text-[10px] text-[#6E6E6E] mt-0.5 flex items-center gap-1">
+              <svg class="w-2.5 h-2.5 text-orange-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
               </svg>
               Última compra: {{ lead.ultima_compra_em.strftime('%d/%m/%Y') }}
-              <span class="text-orange-500/70 font-medium">({{ lead.dias_sem_compra }} dias)</span>
+              <span class="text-orange-700 font-medium">({{ lead.dias_sem_compra }} dias)</span>
             </div>
             {% endif %}
             {% endif %}
           </div>
-          <div class="text-xs text-[#555] mt-0.5">{{ lead.cnpj[:2] }}.{{ lead.cnpj[2:5] }}.{{ lead.cnpj[5:8] }}/{{ lead.cnpj[8:12] }}-{{ lead.cnpj[12:] }}</div>
-          <div class="text-xs text-orange-500 mt-0.5">{{ lead.cnae_descricao or lead.cnae_principal or '—' }}</div>
+          <div class="text-xs text-[#9A9A9A] mt-0.5">{{ lead.cnpj[:2] }}.{{ lead.cnpj[2:5] }}.{{ lead.cnpj[5:8] }}/{{ lead.cnpj[8:12] }}-{{ lead.cnpj[12:] }}</div>
+          <div class="text-xs text-orange-600 mt-0.5">{{ lead.cnae_descricao or lead.cnae_principal or '—' }}</div>
         </td>
         <td class="px-4 py-3">
-          <div class="text-[#ccc]">
+          <div class="text-[#404040]">
             {{ lead.tipo_logradouro or '' }} {{ lead.logradouro or '' }}{% if lead.numero %}, {{ lead.numero }}{% endif %}
           </div>
-          {% if lead.complemento %}<div class="text-xs text-[#555]">{{ lead.complemento }}</div>{% endif %}
-          <div class="text-xs text-[#888]">{{ lead.bairro or '' }}{% if lead.municipio %} — {{ lead.municipio }}/{{ lead.uf }}{% endif %}</div>
-          {% if lead.cep %}<div class="text-xs text-[#555]">CEP {{ lead.cep[:5] }}-{{ lead.cep[5:] }}</div>{% endif %}
+          {% if lead.complemento %}<div class="text-xs text-[#9A9A9A]">{{ lead.complemento }}</div>{% endif %}
+          <div class="text-xs text-[#6E6E6E]">{{ lead.bairro or '' }}{% if lead.municipio %} — {{ lead.municipio }}/{{ lead.uf }}{% endif %}</div>
+          {% if lead.cep %}<div class="text-xs text-[#9A9A9A]">CEP {{ lead.cep[:5] }}-{{ lead.cep[5:] }}</div>{% endif %}
         </td>
         <td class="px-4 py-3">
           {% if lead.ddd_1 and lead.telefone_1 %}
-          <div class="text-[#ccc]">({{ lead.ddd_1 }}) {{ lead.telefone_1 }}</div>
+          <div class="text-[#404040]">({{ lead.ddd_1 }}) {{ lead.telefone_1 }}</div>
           {% endif %}
           {% if lead.ddd_2 and lead.telefone_2 and lead.ddd_2 != '0000' %}
-          <div class="text-[#888] text-xs">({{ lead.ddd_2 }}) {{ lead.telefone_2 }}</div>
+          <div class="text-[#6E6E6E] text-xs">({{ lead.ddd_2 }}) {{ lead.telefone_2 }}</div>
           {% endif %}
           {% if lead.email %}
-          <div class="text-xs text-orange-400 truncate max-w-[160px]" title="{{ lead.email }}">{{ lead.email.lower() }}</div>
+          <div class="text-xs text-orange-700 truncate max-w-[160px]" title="{{ lead.email }}">{{ lead.email.lower() }}</div>
           {% endif %}
         </td>
         <td class="px-4 py-3">
           {% set porte_map = {'01': 'MEI', '03': 'ME', '05': 'EPP', '99': 'Demais', '00': '—'} %}
           <span class="inline-block text-xs px-2 py-0.5 rounded-full font-medium
-            {% if lead.porte == '01' %}bg-[#2d1f4e] text-purple-400 border border-purple-800
-            {% elif lead.porte == '03' %}bg-[#1a2e1f] text-green-400 border border-green-800
-            {% elif lead.porte == '05' %}bg-[#1a2530] text-blue-400 border border-blue-800
-            {% else %}bg-[#222] text-[#888] border border-[#3a3a3a]{% endif %}">
+            {% if lead.porte == '01' %}bg-purple-50 text-purple-700 border border-purple-200
+            {% elif lead.porte == '03' %}bg-green-50 text-green-700 border border-green-200
+            {% elif lead.porte == '05' %}bg-blue-50 text-blue-700 border border-blue-200
+            {% else %}bg-[#F4F4F4] text-[#6E6E6E] border border-[#E3E3E3]{% endif %}">
             {{ porte_map.get(lead.porte or '00', lead.porte or '—') }}
           </span>
           {% if lead.capital_social %}
-          <div class="text-xs text-[#555] mt-0.5">R$ {{ "{:,.0f}".format(lead.capital_social).replace(",", ".") }}</div>
+          <div class="text-xs text-[#9A9A9A] mt-0.5">R$ {{ "{:,.0f}".format(lead.capital_social).replace(",", ".") }}</div>
           {% endif %}
         </td>
       </tr>
@@ -159,18 +159,18 @@
   <button hx-get="/" hx-target="#conteudo" hx-swap="innerHTML show:window:top"
           hx-include="#filtros" hx-push-url="true"
           hx-vals='{"page": {{ resultado.page - 1 }}}'
-          class="px-3 py-1.5 rounded-lg border border-[#3a3a3a] text-sm text-[#aaa] hover:border-orange-500 hover:text-orange-500 transition-colors">
+          class="px-3 py-1.5 rounded-lg border border-[#E3E3E3] text-sm text-[#595959] hover:border-orange-500 hover:text-orange-500 transition-colors">
     ← Anterior
   </button>
   {% endif %}
 
-  <span class="text-sm text-[#666]">Página {{ resultado.page }} de {{ resultado.pages }}</span>
+  <span class="text-sm text-[#6E6E6E]">Página {{ resultado.page }} de {{ resultado.pages }}</span>
 
   {% if resultado.page < resultado.pages %}
   <button hx-get="/" hx-target="#conteudo" hx-swap="innerHTML show:window:top"
           hx-include="#filtros" hx-push-url="true"
           hx-vals='{"page": {{ resultado.page + 1 }}}'
-          class="px-3 py-1.5 rounded-lg border border-[#3a3a3a] text-sm text-[#aaa] hover:border-orange-500 hover:text-orange-500 transition-colors">
+          class="px-3 py-1.5 rounded-lg border border-[#E3E3E3] text-sm text-[#595959] hover:border-orange-500 hover:text-orange-500 transition-colors">
     Próxima →
   </button>
   {% endif %}
@@ -179,26 +179,26 @@
 
 <!-- Modal de detalhes do cliente -->
 <div id="modal-cliente" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-  <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="fecharModalCliente()"></div>
-  <div class="relative bg-[#1a1a1a] border border-[#2e2e2e] rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto z-10">
-    <div class="flex items-start justify-between p-6 border-b border-[#2e2e2e]">
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="fecharModalCliente()"></div>
+  <div class="relative bg-white border border-[#E3E3E3] rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto z-10">
+    <div class="flex items-start justify-between p-6 border-b border-[#E3E3E3]">
       <div class="flex-1 min-w-0">
-        <h2 id="modal-nome" class="text-lg font-semibold text-white truncate"></h2>
-        <div id="modal-razao" class="text-xs text-[#555] mt-0.5"></div>
-        <div id="modal-cnpj" class="text-sm text-[#555] mt-0.5 font-mono"></div>
+        <h2 id="modal-nome" class="text-lg font-semibold text-[#262626] truncate"></h2>
+        <div id="modal-razao" class="text-xs text-[#9A9A9A] mt-0.5"></div>
+        <div id="modal-cnpj" class="text-sm text-[#9A9A9A] mt-0.5 font-mono"></div>
         <div id="modal-badges" class="flex flex-wrap gap-2 mt-2"></div>
       </div>
       <button onclick="fecharModalCliente()"
-              class="text-[#666] hover:text-white transition-colors ml-4 flex-shrink-0 mt-0.5">
+              class="text-[#9A9A9A] hover:text-[#262626] transition-colors ml-4 flex-shrink-0 mt-0.5">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
         </svg>
       </button>
     </div>
     <div class="p-6 space-y-5" id="modal-body"></div>
-    <div id="modal-pedidos-section" class="hidden border-t border-[#2e2e2e]">
+    <div id="modal-pedidos-section" class="hidden border-t border-[#E3E3E3]">
       <div class="px-6 pt-4 pb-2">
-        <div class="text-[10px] font-semibold text-[#555] uppercase tracking-wider">Pedidos</div>
+        <div class="text-[10px] font-semibold text-[#9A9A9A] uppercase tracking-wider">Pedidos</div>
       </div>
       <div id="modal-pedidos" class="px-6 pb-6"></div>
     </div>
@@ -227,8 +227,8 @@ function _secao(titulo, linhas) {
   if (!conteudo) return '';
   return `
     <div>
-      <div class="text-[10px] font-semibold text-[#555] uppercase tracking-wider mb-2">${titulo}</div>
-      <div class="bg-[#111] rounded-xl border border-[#2a2a2a] divide-y divide-[#222]">
+      <div class="text-[10px] font-semibold text-[#9A9A9A] uppercase tracking-wider mb-2">${titulo}</div>
+      <div class="bg-[#FAFAFA] rounded-xl border border-[#E3E3E3] divide-y divide-[#EFEFEF]">
         ${conteudo}
       </div>
     </div>`;
@@ -237,8 +237,8 @@ function _secao(titulo, linhas) {
 function _linha(label, valor) {
   if (!valor) return '';
   return `<div class="flex items-start gap-3 px-4 py-2.5">
-    <span class="text-[#555] text-xs w-28 flex-shrink-0 pt-0.5">${label}</span>
-    <span class="text-[#ccc] text-sm flex-1">${valor}</span>
+    <span class="text-[#9A9A9A] text-xs w-28 flex-shrink-0 pt-0.5">${label}</span>
+    <span class="text-[#404040] text-sm flex-1">${valor}</span>
   </div>`;
 }
 
@@ -259,12 +259,12 @@ window.abrirModalCliente = function(lead) {
   badgesEl.innerHTML = '';
   if (lead.eh_cliente) {
     const b = document.createElement('span');
-    b.className = 'inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-semibold bg-orange-500/15 text-orange-400 border border-orange-500/30 uppercase tracking-wide';
+    b.className = 'inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-semibold bg-orange-500/12 text-orange-700 border border-orange-500/30 uppercase tracking-wide';
     b.innerHTML = `<svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg> Cliente`;
     badgesEl.appendChild(b);
   } else {
     const b = document.createElement('span');
-    b.className = 'inline-flex items-center text-[10px] px-2 py-0.5 rounded-full font-medium bg-[#222] text-[#888] border border-[#3a3a3a] uppercase tracking-wide';
+    b.className = 'inline-flex items-center text-[10px] px-2 py-0.5 rounded-full font-medium bg-[#F4F4F4] text-[#6E6E6E] border border-[#E3E3E3] uppercase tracking-wide';
     b.textContent = 'Prospecto';
     badgesEl.appendChild(b);
   }
@@ -287,11 +287,11 @@ window.abrirModalCliente = function(lead) {
     ? `(${lead.ddd_2}) ${lead.telefone_2}` : null;
 
   const ultimaCompra = lead.ultima_compra_em
-    ? `${_e(lead.ultima_compra_em)}${lead.dias_sem_compra != null ? ` <span class="text-orange-400">(${lead.dias_sem_compra} dias)</span>` : ''}` : null;
+    ? `${_e(lead.ultima_compra_em)}${lead.dias_sem_compra != null ? ` <span class="text-orange-700">(${lead.dias_sem_compra} dias)</span>` : ''}` : null;
 
   document.getElementById('modal-body').innerHTML = [
     _secao('Atividade', [
-      _linha('CNAE', lead.cnae_descricao ? `${_e(lead.cnae_descricao)} <span class="text-[#555] text-xs">${_e(lead.cnae_principal || '')}</span>` : _e(lead.cnae_principal)),
+      _linha('CNAE', lead.cnae_descricao ? `${_e(lead.cnae_descricao)} <span class="text-[#9A9A9A] text-xs">${_e(lead.cnae_principal || '')}</span>` : _e(lead.cnae_principal)),
       _linha('Situação', situacaoLabel ? _e(situacaoLabel) : null),
     ]),
     _secao('Endereço', [
@@ -303,7 +303,7 @@ window.abrirModalCliente = function(lead) {
     _secao('Contato', [
       _linha('Telefone', _e(tel1)),
       tel2 ? _linha('Telefone 2', _e(tel2)) : '',
-      lead.email ? _linha('E-mail', `<span class="text-orange-400 break-all">${_e(lead.email.toLowerCase())}</span>`) : '',
+      lead.email ? _linha('E-mail', `<span class="text-orange-700 break-all">${_e(lead.email.toLowerCase())}</span>`) : '',
     ]),
     _secao('Dados cadastrais', [
       _linha('Porte', _e(porteLabel)),
@@ -320,7 +320,7 @@ window.abrirModalCliente = function(lead) {
   if (pedidosSection && pedidosEl) {
     if (lead.eh_cliente) {
       pedidosSection.classList.remove('hidden');
-      pedidosEl.innerHTML = '<div class="py-4 text-center text-[#555] text-xs">Carregando pedidos…</div>';
+      pedidosEl.innerHTML = '<div class="py-4 text-center text-[#9A9A9A] text-xs">Carregando pedidos…</div>';
       htmx.ajax('GET', '/pedidos/' + encodeURIComponent(lead.cnpj), {
         target: '#modal-pedidos', swap: 'innerHTML',
       });

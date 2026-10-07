@@ -1,5 +1,5 @@
   <!-- ========= FILTROS STICKY ========= -->
-  <div class="sticky top-0 z-20 -mx-5 px-5 py-3 bg-[#111] border-b border-[#2a2a2a] shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
+  <div class="sticky top-0 z-20 -mx-5 px-5 py-3 bg-white border-b border-[#E3E3E3] shadow-[0_2px_10px_rgba(0,0,0,0.04)]">
     <form id="filtros"
           hx-get="{{ pagina }}"
           hx-target="#conteudo"
@@ -12,9 +12,9 @@
 
         <!-- Estado -->
         <div class="min-w-[110px]">
-          <label class="block text-[10px] font-semibold text-[#666] mb-1 uppercase tracking-wider">Estado</label>
+          <label class="block text-[10px] font-semibold text-[#6E6E6E] mb-1 uppercase tracking-wider">Estado</label>
           <select name="uf" id="sel-uf"
-                  class="w-full rounded-lg bg-[#1a1a1a] border border-[#333] px-2.5 py-1.5 text-sm text-[#e5e5e5] focus:outline-none focus:border-orange-500 transition-colors"
+                  class="w-full rounded-lg bg-white border border-[#E3E3E3] px-2.5 py-1.5 text-sm text-[#262626] focus:outline-none focus:border-orange-500 transition-colors"
                   hx-get="/municipios-options"
                   hx-target="#sel-municipio"
                   hx-trigger="change"
@@ -28,18 +28,18 @@
 
         <!-- Município -->
         <div class="flex-1 min-w-[160px]">
-          <label class="block text-[10px] font-semibold text-[#666] mb-1 uppercase tracking-wider">Município</label>
+          <label class="block text-[10px] font-semibold text-[#6E6E6E] mb-1 uppercase tracking-wider">Município</label>
           <select name="municipio_codigo" id="sel-municipio"
-                  class="w-full rounded-lg bg-[#1a1a1a] border border-[#333] px-2.5 py-1.5 text-sm text-[#e5e5e5] focus:outline-none focus:border-orange-500 transition-colors">
+                  class="w-full rounded-lg bg-white border border-[#E3E3E3] px-2.5 py-1.5 text-sm text-[#262626] focus:outline-none focus:border-orange-500 transition-colors">
             <option value="">Todos os municípios</option>
           </select>
         </div>
 
         <!-- Porte -->
         <div class="min-w-[100px]">
-          <label class="block text-[10px] font-semibold text-[#666] mb-1 uppercase tracking-wider">Porte</label>
+          <label class="block text-[10px] font-semibold text-[#6E6E6E] mb-1 uppercase tracking-wider">Porte</label>
           <select name="porte"
-                  class="w-full rounded-lg bg-[#1a1a1a] border border-[#333] px-2.5 py-1.5 text-sm text-[#e5e5e5] focus:outline-none focus:border-orange-500 transition-colors">
+                  class="w-full rounded-lg bg-white border border-[#E3E3E3] px-2.5 py-1.5 text-sm text-[#262626] focus:outline-none focus:border-orange-500 transition-colors">
             <option value="">Todos</option>
             <option value="01">MEI</option>
             <option value="03">ME</option>
@@ -50,9 +50,9 @@
 
         <!-- Status do cliente -->
         <div class="min-w-[120px]">
-          <label class="block text-[10px] font-semibold text-[#666] mb-1 uppercase tracking-wider">Status</label>
+          <label class="block text-[10px] font-semibold text-[#6E6E6E] mb-1 uppercase tracking-wider">Status</label>
           <select name="status_cliente"
-                  class="w-full rounded-lg bg-[#1a1a1a] border border-[#333] px-2.5 py-1.5 text-sm text-[#e5e5e5] focus:outline-none focus:border-orange-500 transition-colors">
+                  class="w-full rounded-lg bg-white border border-[#E3E3E3] px-2.5 py-1.5 text-sm text-[#262626] focus:outline-none focus:border-orange-500 transition-colors">
             <option value="">Todos</option>
             <option value="cliente">Clientes</option>
             <option value="prospect">Prospectos</option>
@@ -63,8 +63,8 @@
         <div class="flex items-center gap-3 flex-shrink-0 ml-auto">
           <label class="flex items-center gap-1.5 cursor-pointer">
             <input type="checkbox" name="apenas_ativas" value="true" checked
-                   class="rounded border-[#3a3a3a] bg-[#222] accent-orange-500" />
-            <span class="text-sm text-[#888] whitespace-nowrap">Apenas ativas</span>
+                   class="rounded border-[#D9D9D9] bg-white accent-orange-500" />
+            <span class="text-sm text-[#6E6E6E] whitespace-nowrap">Apenas ativas</span>
           </label>
           <button type="submit"
                   class="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-4 py-1.5 rounded-lg transition-colors flex items-center gap-2 whitespace-nowrap text-sm">
@@ -83,13 +83,13 @@
       </div>
 
       <!-- Linha 2 — filtro por produto -->
-      <div class="flex items-center gap-3 mt-2.5 pt-2.5 border-t border-[#1e1e1e]">
+      <div class="flex items-center gap-3 mt-2.5 pt-2.5 border-t border-[#F0F0F0]">
 
         <!-- Combobox de produto -->
         <div class="relative flex-shrink-0 w-72" id="div-produto">
-          <label class="block text-[10px] font-semibold text-[#666] mb-1 uppercase tracking-wider">Produto comprado</label>
+          <label class="block text-[10px] font-semibold text-[#6E6E6E] mb-1 uppercase tracking-wider">Produto comprado</label>
           <div class="relative flex items-center">
-            <svg class="absolute left-2.5 w-3.5 h-3.5 text-[#555] pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="absolute left-2.5 w-3.5 h-3.5 text-[#9A9A9A] pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
             <input type="text" id="produto-busca" name="q"
@@ -98,11 +98,11 @@
                    hx-get="/produtos-options"
                    hx-target="#produto-dropdown"
                    hx-trigger="input changed delay:250ms"
-                   class="w-full pl-8 pr-8 rounded-lg bg-[#1a1a1a] border border-[#333] py-1.5 text-sm text-[#e5e5e5] focus:outline-none focus:border-orange-500 transition-colors" />
+                   class="w-full pl-8 pr-8 rounded-lg bg-white border border-[#E3E3E3] py-1.5 text-sm text-[#262626] focus:outline-none focus:border-orange-500 transition-colors" />
             <button type="button" id="btn-menu-produto"
                     onclick="toggleMenuProdutos()"
                     title="Abrir menu de seleção"
-                    class="absolute right-2 text-[#555] hover:text-[#aaa] transition-colors">
+                    class="absolute right-2 text-[#9A9A9A] hover:text-[#595959] transition-colors">
               <svg id="ico-menu-produto" class="w-3.5 h-3.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
               </svg>
@@ -110,13 +110,13 @@
           </div>
           <!-- Dropdown (posicionado abaixo do input, acima do restante da página) -->
           <div id="produto-dropdown"
-               class="hidden absolute top-full left-0 right-0 z-50 mt-1 bg-[#161616] border border-[#333] rounded-xl shadow-2xl p-1 max-h-56 overflow-y-auto">
+               class="hidden absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-[#E3E3E3] rounded-xl shadow-lg p-1 max-h-56 overflow-y-auto">
           </div>
         </div>
 
         <!-- Chips dos produtos selecionados -->
         <div class="flex-1 flex flex-wrap gap-1.5 items-center min-h-[34px]">
-          <span id="produtos-placeholder" class="text-xs text-[#3a3a3a] select-none">Todos os produtos</span>
+          <span id="produtos-placeholder" class="text-xs text-[#D9D9D9] select-none">Todos os produtos</span>
         </div>
 
         <input type="hidden" name="produtos_codigos" id="produtos-codigos-hidden" value="" />

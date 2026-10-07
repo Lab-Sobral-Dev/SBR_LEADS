@@ -80,14 +80,14 @@
     ul.innerHTML = '';
     paradas.forEach((p, i) => {
       const li = document.createElement('li');
-      li.className = 'flex items-center gap-2 px-2 py-1.5 rounded bg-[#1c1c1c] border border-[#2a2a2a]';
+      li.className = 'flex items-center gap-2 px-2 py-1.5 rounded bg-[#FAFAFA] border border-[#E3E3E3]';
       li.dataset.documento = p.documento;
       li.innerHTML =
-        '<span class="cursor-move text-[#555]">⠿</span>' +
-        '<span class="text-[#888] w-5 text-center">' + (i + 1) + '</span>' +
-        '<span class="flex-1 truncate text-[#ddd]">' + (i === partidaIdx ? '🏁 ' : '') + esc(p.nome) + '</span>' +
-        '<button class="text-[#666] hover:text-orange-500 text-xs" title="Definir como partida">↑</button>' +
-        '<button class="text-[#666] hover:text-red-400 text-xs" title="Remover">✕</button>';
+        '<span class="cursor-move text-[#9A9A9A]">⠿</span>' +
+        '<span class="text-[#6E6E6E] w-5 text-center">' + (i + 1) + '</span>' +
+        '<span class="flex-1 truncate text-[#262626]">' + (i === partidaIdx ? '🏁 ' : '') + esc(p.nome) + '</span>' +
+        '<button class="text-[#6E6E6E] hover:text-orange-500 text-xs" title="Definir como partida">↑</button>' +
+        '<button class="text-[#6E6E6E] hover:text-red-700 text-xs" title="Remover">✕</button>';
       const [, , , btnPart, btnRem] = li.children;
       btnPart.onclick = () => { partidaIdx = i; render(); };
       btnRem.onclick = () => {
@@ -145,14 +145,14 @@
     paradas.forEach((p, i) => {
       if (p.lat == null || p.lng == null) return;
       const icon = L.divIcon({
-        html: '<div style="background:#f97316;color:#fff;width:22px;height:22px;border-radius:50%;border:2px solid #fff;text-align:center;line-height:22px;font-size:11px;font-weight:700">' + (i + 1) + '</div>',
+        html: '<div style="background:#FB6602;color:#fff;width:22px;height:22px;border-radius:50%;border:2px solid #fff;text-align:center;line-height:22px;font-size:11px;font-weight:700">' + (i + 1) + '</div>',
         className: 'rota-pin', iconSize: [26, 26], iconAnchor: [13, 13],
       });
       L.marker([p.lat, p.lng], { icon }).addTo(camada);
       pts.push([p.lat, p.lng]);
     });
     if (pts.length) {
-      L.polyline(pts, { color: '#f97316', weight: 2, opacity: 0.6 }).addTo(camada);
+      L.polyline(pts, { color: '#FB6602', weight: 2, opacity: 0.6 }).addTo(camada);
       mapa.fitBounds(pts, { padding: [40, 40], maxZoom: 15 });
     }
     setTimeout(() => mapa.invalidateSize(), 100);
@@ -173,7 +173,7 @@
     const d = await postJson('/rotas/maps-urls', { paradas });
     const cont = document.getElementById('trechos-maps');
     cont.innerHTML = '';
-    if (!d || !d.trechos || !d.trechos.length) { cont.innerHTML = '<p class="text-xs text-[#666]">Adicione ao menos 2 paradas com endereço.</p>'; return; }
+    if (!d || !d.trechos || !d.trechos.length) { cont.innerHTML = '<p class="text-xs text-[#9A9A9A]">Adicione ao menos 2 paradas com endereço.</p>'; return; }
     if (d.trechos.length === 1) { window.open(d.trechos[0], '_blank'); return; }
     d.trechos.forEach((u, i) => {
       const a = document.createElement('a');

@@ -1,5 +1,5 @@
 {% if candidatos %}
-<ul class="divide-y divide-[#1e1e1e]">
+<ul class="divide-y divide-[#F0F0F0]">
   {% for c in candidatos %}
   <li class="flex items-start gap-2 px-2 py-2 text-sm">
     <input type="checkbox" class="mt-1 cand-check"
@@ -14,11 +14,11 @@
            data-uf="{{ c.uf or '' }}"
            onclick="window.toggleCandidato && window.toggleCandidato(this)">
     <div class="min-w-0">
-      <div class="text-[#ddd] truncate">
+      <div class="text-[#262626] truncate">
         {{ c.nome }}
-        {% if c.em_risco %}<span class="ml-1 text-xs text-red-400">🔴 em risco</span>{% endif %}
+        {% if c.em_risco %}<span class="ml-1 text-xs text-red-700">🔴 em risco</span>{% endif %}
       </div>
-      <div class="text-xs text-[#777]">
+      <div class="text-xs text-[#6E6E6E]">
         {% if c.eh_cliente %}Cliente{% if c.vendedor %} · {{ c.vendedor }}{% endif %}{% else %}Prospecto{% endif %}
         {% if c.bairro %} · {{ c.bairro }}{% endif %}
       </div>
@@ -27,5 +27,5 @@
   {% endfor %}
 </ul>
 {% else %}
-<p class="text-sm text-[#666] px-2 py-4 text-center">Escolha vendedor e cidade para listar os candidatos.</p>
+<p class="text-sm text-[#9A9A9A] px-2 py-4 text-center">Escolha vendedor e cidade para listar os candidatos.</p>
 {% endif %}

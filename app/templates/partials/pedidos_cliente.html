@@ -1,37 +1,37 @@
 {% if not pedidos %}
-<div class="text-center py-4 text-[#555] text-xs">Nenhum pedido encontrado.</div>
+<div class="text-center py-4 text-[#9A9A9A] text-xs">Nenhum pedido encontrado.</div>
 {% else %}
 <div class="space-y-2">
   {% for p in pedidos %}
-  <details class="group bg-[#0d0d0d] rounded-xl border border-[#2a2a2a] overflow-hidden">
-    <summary class="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-[#141414] transition-colors list-none select-none">
+  <details class="group bg-[#FAFAFA] rounded-xl border border-[#E3E3E3] overflow-hidden">
+    <summary class="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-[#F0F0F0] transition-colors list-none select-none">
       <div class="flex items-center gap-2.5 flex-wrap">
-        <span class="text-sm font-medium text-[#ccc]">#{{ p.pedido.pedido_numero }}</span>
+        <span class="text-sm font-medium text-[#262626]">#{{ p.pedido.pedido_numero }}</span>
         {% if p.pedido.emissao %}
-        <span class="text-xs text-[#666]">{{ p.pedido.emissao.strftime('%d/%m/%Y') }}</span>
+        <span class="text-xs text-[#6E6E6E]">{{ p.pedido.emissao.strftime('%d/%m/%Y') }}</span>
         {% endif %}
         {% if p.pedido.situacao %}
         <span class="text-[10px] px-2 py-0.5 rounded-full border font-medium
-          {% if p.pedido.situacao == 'Enviado' %}bg-green-500/10 text-green-400 border-green-500/30
-          {% elif p.pedido.situacao in ('Cancelado', 'Recusado') %}bg-red-500/10 text-red-400 border-red-500/30
-          {% else %}bg-[#222] text-[#888] border-[#3a3a3a]{% endif %}">
+          {% if p.pedido.situacao == 'Enviado' %}bg-green-500/10 text-green-700 border-green-500/30
+          {% elif p.pedido.situacao in ('Cancelado', 'Recusado') %}bg-red-500/10 text-red-700 border-red-500/30
+          {% else %}bg-[#F4F4F4] text-[#6E6E6E] border-[#E3E3E3]{% endif %}">
           {{ p.pedido.situacao }}
         </span>
         {% endif %}
         {% if p.pedido.orcamento %}
-        <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/30 font-medium">Orçamento</span>
+        <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-700 border border-blue-500/30 font-medium">Orçamento</span>
         {% endif %}
         {% if p.pedido.vendedor %}
-        <span class="text-[10px] text-[#555]">{{ p.pedido.vendedor }}</span>
+        <span class="text-[10px] text-[#9A9A9A]">{{ p.pedido.vendedor }}</span>
         {% endif %}
       </div>
       <div class="flex items-center gap-3 flex-shrink-0 ml-3">
         {% if p.pedido.total_liquido %}
-        <span class="text-sm font-semibold text-orange-400">
+        <span class="text-sm font-semibold text-orange-700">
           R$&nbsp;{{ "{:,.2f}".format(p.pedido.total_liquido).replace(",", "X").replace(".", ",").replace("X", ".") }}
         </span>
         {% endif %}
-        <svg class="w-3.5 h-3.5 text-[#555] group-open:rotate-180 transition-transform flex-shrink-0"
+        <svg class="w-3.5 h-3.5 text-[#9A9A9A] group-open:rotate-180 transition-transform flex-shrink-0"
              fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
@@ -39,34 +39,34 @@
     </summary>
 
     {% if p.itens %}
-    <div class="border-t border-[#1e1e1e]">
+    <div class="border-t border-[#E3E3E3]">
       <table class="w-full text-xs">
         <thead>
-          <tr class="bg-[#0a0a0a]">
-            <th class="px-4 py-2 text-left text-[#555] font-medium">Produto</th>
-            <th class="px-4 py-2 text-right text-[#555] font-medium w-14">Qtde</th>
-            <th class="px-4 py-2 text-right text-[#555] font-medium w-24">Unit.</th>
-            <th class="px-4 py-2 text-right text-[#555] font-medium w-24">Total</th>
+          <tr class="bg-[#F4F4F4]">
+            <th class="px-4 py-2 text-left text-[#9A9A9A] font-medium">Produto</th>
+            <th class="px-4 py-2 text-right text-[#9A9A9A] font-medium w-14">Qtde</th>
+            <th class="px-4 py-2 text-right text-[#9A9A9A] font-medium w-24">Unit.</th>
+            <th class="px-4 py-2 text-right text-[#9A9A9A] font-medium w-24">Total</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-[#161616]">
+        <tbody class="divide-y divide-[#F0F0F0]">
           {% for item in p.itens %}
-          <tr class="hover:bg-[#111]">
+          <tr class="hover:bg-[#F4F4F4]">
             <td class="px-4 py-2.5">
-              <div class="text-[#bbb] leading-snug">{{ item.produto_descricao or '—' }}</div>
-              <div class="text-[#444] mt-0.5">
+              <div class="text-[#404040] leading-snug">{{ item.produto_descricao or '—' }}</div>
+              <div class="text-[#9A9A9A] mt-0.5">
                 {{ item.produto_codigo or '' }}{% if item.produto_codigo and item.produto_unidade %} · {% endif %}{{ item.produto_unidade or '' }}
               </div>
             </td>
-            <td class="px-4 py-2.5 text-right text-[#888]">
+            <td class="px-4 py-2.5 text-right text-[#6E6E6E]">
               {{ "{:g}".format(item.quantidade) if item.quantidade is not none else '—' }}
             </td>
-            <td class="px-4 py-2.5 text-right text-[#888]">
+            <td class="px-4 py-2.5 text-right text-[#6E6E6E]">
               {% if item.preco_unitario is not none %}
               R$&nbsp;{{ "{:,.2f}".format(item.preco_unitario).replace(",", "X").replace(".", ",").replace("X", ".") }}
               {% else %}—{% endif %}
             </td>
-            <td class="px-4 py-2.5 text-right font-medium text-[#ccc]">
+            <td class="px-4 py-2.5 text-right font-medium text-[#262626]">
               {% if item.total_liquido is not none %}
               R$&nbsp;{{ "{:,.2f}".format(item.total_liquido).replace(",", "X").replace(".", ",").replace("X", ".") }}
               {% else %}—{% endif %}
