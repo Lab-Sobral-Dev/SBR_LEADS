@@ -125,8 +125,11 @@
     // Reforço client-side ao gate do middleware (Sec-Fetch-Dest: document) —
     // achado ao vivo num Firefox real que não manda esse header, deixando a
     // tela vazar pra acesso direto. window.self !== window.top não depende
-    // de nenhum header.
-    window.location.replace('https://gestao.laboratoriosobral.com.br/comercial/demandas/leads')
+    // de nenhum header. Localhost fica de fora: é desenvolvimento local, não
+    // acesso direto em produção.
+    if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      window.location.replace('https://gestao.laboratoriosobral.com.br/comercial/demandas/leads')
+    }
   }
 </script>
 {% if user is defined and user %}

@@ -199,7 +199,11 @@ async def abra_no_gestao(request: Request, call_next):
     é um POST nativo (`<form method="post">`, também `Sec-Fetch-Dest:
     document`) e não pode ser bloqueado aqui.
     """
-    if request.method == "GET" and request.headers.get("sec-fetch-dest") == "document":
+    if (
+        request.method == "GET"
+        and request.headers.get("sec-fetch-dest") == "document"
+        and request.url.hostname not in ("localhost", "127.0.0.1")
+    ):
         return RedirectResponse(url=settings.gestao_url_sbr_leads, status_code=302)
     return await call_next(request)
 

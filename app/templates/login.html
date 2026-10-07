@@ -23,7 +23,12 @@
     // Acoplamento, sbrgestao). Reforço client-side ao gate do middleware
     // (Sec-Fetch-Dest: document) — achado ao vivo num Firefox real que não
     // manda esse header. window.self !== window.top não depende de header.
-    if (window.self === window.top) {
+    // Localhost fica de fora: é desenvolvimento local, não acesso direto em produção.
+    if (
+      window.self === window.top &&
+      location.hostname !== 'localhost' &&
+      location.hostname !== '127.0.0.1'
+    ) {
       window.location.replace('https://gestao.laboratoriosobral.com.br/comercial/demandas/leads')
     }
   </script>
