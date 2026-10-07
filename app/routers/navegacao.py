@@ -32,13 +32,6 @@ def _get_stats(db: Session) -> Stats:
     )
 
 
-@router.get("/inicio", response_class=HTMLResponse)
-def inicio(request: Request, current_user: dict = Depends(require_login), db: Session = Depends(get_db)):
-    return templates.TemplateResponse("inicio.html", {
-        "request": request, "user": current_user, "pm": info_pedido_mobile(db),
-    })
-
-
 @router.get("/dashboards", response_class=HTMLResponse)
 def dashboards(request: Request, current_user: dict = Depends(require_login)):
     return templates.TemplateResponse("dashboards.html", {

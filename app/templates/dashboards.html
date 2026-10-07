@@ -2,29 +2,35 @@
 {% block title %}Dashboards{% endblock %}
 {% block content %}
 <div class="max-w-5xl">
-  <h1 class="text-xl font-bold text-white">Dashboards</h1>
-  <p class="text-[#888] text-sm mt-1 mb-5">Escolha um painel para abrir.</p>
+  <h1 class="text-xl font-bold text-[#262626]">Dashboards</h1>
+  <p class="text-[#6E6E6E] text-sm mt-1 mb-5">Escolha um painel para abrir.</p>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-    <a href="/dashboard" class="bg-[#171717] border border-[#2e2e2e] rounded-xl p-5 hover:border-orange-500 hover:-translate-y-0.5 transition-all group">
-      <div class="text-2xl">🏆</div>
-      <div class="text-white font-semibold mt-2 group-hover:text-orange-500">Cockpit do Gestor</div>
-      <div class="text-[#888] text-xs mt-1 leading-relaxed">Ranking de vendedores, KPIs comparados, clientes em risco e concentração da carteira.</div>
-      <span class="inline-block mt-3 text-[9px] px-2 py-0.5 rounded-full bg-green-500/12 text-green-400">Disponível</span>
+    <a href="/dashboard" class="bg-white border border-[#E3E3E3] rounded-xl p-5 hover:border-orange-300 hover:shadow-md hover:-translate-y-0.5 transition-all group">
+      <div class="w-11 h-11 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-600">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v3a5 5 0 0 1-10 0V4z"/><path d="M7 5H4.5A2.5 2.5 0 0 0 5 10"/><path d="M17 5h2.5A2.5 2.5 0 0 1 19 10"/><path d="M12 12v4"/><path d="M8.5 20h7l-1-3h-5l-1 3z"/></svg>
+      </div>
+      <div class="text-[#262626] font-semibold mt-3 group-hover:text-orange-600">Cockpit do Gestor</div>
+      <div class="text-[#6E6E6E] text-xs mt-1 leading-relaxed">Ranking de vendedores, KPIs comparados, clientes em risco e concentração da carteira.</div>
+      <span class="inline-block mt-3 text-[9px] px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">Disponível</span>
     </a>
 
-    <a href="/dashboard/analise" class="bg-[#171717] border border-[#2e2e2e] rounded-xl p-5 hover:border-orange-500 hover:-translate-y-0.5 transition-all group">
-      <div class="text-2xl">📈</div>
-      <div class="text-white font-semibold mt-2 group-hover:text-orange-500">Análise de Vendas</div>
-      <div class="text-[#888] text-xs mt-1 leading-relaxed">Curva ABC de produtos e representadas, por receita ou quantidade.</div>
-      <span class="inline-block mt-3 text-[9px] px-2 py-0.5 rounded-full bg-green-500/12 text-green-400">Disponível</span>
+    <a href="/dashboard/analise" class="bg-white border border-[#E3E3E3] rounded-xl p-5 hover:border-orange-300 hover:shadow-md hover:-translate-y-0.5 transition-all group">
+      <div class="w-11 h-11 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-600">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V11"/><path d="M10 19V5"/><path d="M16 19v-7"/><path d="M3 19h18"/><path d="m4 9 5-4 5 3 6-5"/></svg>
+      </div>
+      <div class="text-[#262626] font-semibold mt-3 group-hover:text-orange-600">Análise de Vendas</div>
+      <div class="text-[#6E6E6E] text-xs mt-1 leading-relaxed">Curva ABC de produtos e representadas, por receita ou quantidade.</div>
+      <span class="inline-block mt-3 text-[9px] px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">Disponível</span>
     </a>
 
-    <a href="/dashboard/recompra" class="bg-[#171717] border border-[#2e2e2e] rounded-xl p-5 hover:border-orange-500 hover:-translate-y-0.5 transition-all group">
-      <div class="text-2xl">🔁</div>
-      <div class="text-white font-semibold mt-2 group-hover:text-orange-500">Recompra</div>
-      <div class="text-[#888] text-xs mt-1 leading-relaxed">Quem está fora do próprio ritmo de compra — em dia, atrasando ou atrasado, por cliente.</div>
-      <span class="inline-block mt-3 text-[9px] px-2 py-0.5 rounded-full bg-green-500/12 text-green-400">Disponível</span>
+    <a href="/dashboard/recompra" class="bg-white border border-[#E3E3E3] rounded-xl p-5 hover:border-orange-300 hover:shadow-md hover:-translate-y-0.5 transition-all group">
+      <div class="w-11 h-11 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-600">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10a8 8 0 0 1 14-5l2-2"/><path d="M20 5v4h-4"/><path d="M20 14a8 8 0 0 1-14 5l-2 2"/><path d="M4 19v-4h4"/></svg>
+      </div>
+      <div class="text-[#262626] font-semibold mt-3 group-hover:text-orange-600">Recompra</div>
+      <div class="text-[#6E6E6E] text-xs mt-1 leading-relaxed">Quem está fora do próprio ritmo de compra — em dia, atrasando ou atrasado, por cliente.</div>
+      <span class="inline-block mt-3 text-[9px] px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200">Disponível</span>
     </a>
   </div>
 </div>

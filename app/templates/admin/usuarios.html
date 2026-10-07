@@ -5,67 +5,67 @@
 {% block content %}
 <div class="space-y-6">
   <div class="flex items-center justify-between">
-    <h1 class="text-lg font-semibold text-white">Gerenciar Usuários</h1>
-    <a href="/" class="text-sm text-[#666] hover:text-[#999] transition-colors">← Voltar</a>
+    <h1 class="text-lg font-semibold text-[#262626]">Gerenciar Usuários</h1>
+    <a href="/" class="text-sm text-[#9A9A9A] hover:text-[#6E6E6E] transition-colors">← Voltar</a>
   </div>
 
   {% if mensagem %}
-  <div class="text-sm text-green-400 bg-green-900/20 border border-green-900/40 rounded-lg px-4 py-3">
+  <div class="text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-4 py-3">
     {{ mensagem }}
   </div>
   {% endif %}
   {% if erro %}
-  <div class="text-sm text-red-400 bg-red-900/20 border border-red-900/40 rounded-lg px-4 py-3">
+  <div class="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
     {{ erro }}
   </div>
   {% endif %}
 
   <!-- Tabela de usuários -->
-  <div class="bg-[#171717] rounded-xl border border-[#2e2e2e] overflow-hidden">
+  <div class="bg-white rounded-xl border border-[#E3E3E3] overflow-hidden">
     <table class="w-full text-sm">
       <thead>
-        <tr class="border-b border-[#2e2e2e]">
-          <th class="text-left px-4 py-3 text-xs font-medium text-[#888] uppercase tracking-wide">Nome</th>
-          <th class="text-left px-4 py-3 text-xs font-medium text-[#888] uppercase tracking-wide">E-mail</th>
-          <th class="text-left px-4 py-3 text-xs font-medium text-[#888] uppercase tracking-wide">Perfil</th>
-          <th class="text-left px-4 py-3 text-xs font-medium text-[#888] uppercase tracking-wide">Status</th>
-          <th class="text-left px-4 py-3 text-xs font-medium text-[#888] uppercase tracking-wide">Desde</th>
+        <tr class="border-b border-[#E3E3E3]">
+          <th class="text-left px-4 py-3 text-xs font-medium text-[#6E6E6E] uppercase tracking-wide">Nome</th>
+          <th class="text-left px-4 py-3 text-xs font-medium text-[#6E6E6E] uppercase tracking-wide">E-mail</th>
+          <th class="text-left px-4 py-3 text-xs font-medium text-[#6E6E6E] uppercase tracking-wide">Perfil</th>
+          <th class="text-left px-4 py-3 text-xs font-medium text-[#6E6E6E] uppercase tracking-wide">Status</th>
+          <th class="text-left px-4 py-3 text-xs font-medium text-[#6E6E6E] uppercase tracking-wide">Desde</th>
           <th class="px-4 py-3"></th>
         </tr>
       </thead>
       <tbody>
         {% for u in usuarios %}
-        <tr class="border-b border-[#222] hover:bg-[#1e1e1e] transition-colors">
-          <td class="px-4 py-3 text-[#e5e5e5]">{{ u.nome }}</td>
-          <td class="px-4 py-3 text-[#aaa]">{{ u.email }}</td>
+        <tr class="border-b border-[#F0F0F0] hover:bg-[#FAFAFA] transition-colors">
+          <td class="px-4 py-3 text-[#262626]">{{ u.nome }}</td>
+          <td class="px-4 py-3 text-[#404040]">{{ u.email }}</td>
           <td class="px-4 py-3">
             {% if u.role == 'admin' %}
-            <span class="text-xs px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30">Admin</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-700 border border-orange-500/30">Admin</span>
             {% else %}
-            <span class="text-xs px-2 py-0.5 rounded-full bg-[#2e2e2e] text-[#888] border border-[#3a3a3a]">Usuário</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-[#F4F4F4] text-[#6E6E6E] border border-[#E3E3E3]">Usuário</span>
             {% endif %}
           </td>
           <td class="px-4 py-3">
             {% if u.ativo %}
-            <span class="text-xs text-green-400">Ativo</span>
+            <span class="text-xs text-green-700">Ativo</span>
             {% else %}
-            <span class="text-xs text-red-400">Inativo</span>
+            <span class="text-xs text-red-700">Inativo</span>
             {% endif %}
           </td>
-          <td class="px-4 py-3 text-[#666] text-xs">{{ u.criado_em }}</td>
+          <td class="px-4 py-3 text-[#9A9A9A] text-xs">{{ u.criado_em }}</td>
           <td class="px-4 py-3">
             <div class="flex items-center gap-2 justify-end">
               {% if u.email != user.email %}
               <form method="post" action="/admin/usuarios/{{ u.id }}/toggle">
                 <button type="submit"
-                        class="text-xs px-2 py-1 rounded border border-[#3a3a3a] text-[#888] hover:border-orange-500 hover:text-orange-500 transition-colors">
+                        class="text-xs px-2 py-1 rounded border border-[#E3E3E3] text-[#6E6E6E] hover:border-orange-500 hover:text-orange-500 transition-colors">
                   {{ "Desativar" if u.ativo else "Ativar" }}
                 </button>
               </form>
               {% endif %}
               <button type="button"
                       onclick="abrirResetSenha('{{ u.id }}', '{{ u.nome }}')"
-                      class="text-xs px-2 py-1 rounded border border-[#3a3a3a] text-[#888] hover:border-orange-500 hover:text-orange-500 transition-colors">
+                      class="text-xs px-2 py-1 rounded border border-[#E3E3E3] text-[#6E6E6E] hover:border-orange-500 hover:text-orange-500 transition-colors">
                 Senha
               </button>
             </div>
@@ -73,7 +73,7 @@
         </tr>
         {% else %}
         <tr>
-          <td colspan="6" class="px-4 py-8 text-center text-[#555]">Nenhum usuário cadastrado.</td>
+          <td colspan="6" class="px-4 py-8 text-center text-[#9A9A9A]">Nenhum usuário cadastrado.</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -81,31 +81,31 @@
   </div>
 
   <!-- Formulário novo usuário -->
-  <div class="bg-[#171717] rounded-xl border border-[#2e2e2e] p-5">
-    <h2 class="text-sm font-semibold text-[#aaa] mb-4 uppercase tracking-widest">Novo Usuário</h2>
+  <div class="bg-white rounded-xl border border-[#E3E3E3] p-5">
+    <h2 class="text-sm font-semibold text-[#6E6E6E] mb-4 uppercase tracking-widest">Novo Usuário</h2>
     <form method="post" action="/admin/usuarios" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
-        <label class="block text-xs font-medium text-[#888] mb-1 uppercase tracking-wide">Nome</label>
+        <label class="block text-xs font-medium text-[#6E6E6E] mb-1 uppercase tracking-wide">Nome</label>
         <input type="text" name="nome" required
-               class="w-full rounded-lg bg-[#222] border border-[#3a3a3a] px-3 py-2 text-sm text-[#e5e5e5] placeholder-[#555] focus:outline-none focus:border-orange-500 transition-colors"
+               class="w-full rounded-lg bg-white border border-[#E3E3E3] px-3 py-2 text-sm text-[#262626] placeholder-[#B3B3B3] focus:outline-none focus:border-orange-500 transition-colors"
                placeholder="Nome completo" />
       </div>
       <div>
-        <label class="block text-xs font-medium text-[#888] mb-1 uppercase tracking-wide">E-mail</label>
+        <label class="block text-xs font-medium text-[#6E6E6E] mb-1 uppercase tracking-wide">E-mail</label>
         <input type="email" name="email" required
-               class="w-full rounded-lg bg-[#222] border border-[#3a3a3a] px-3 py-2 text-sm text-[#e5e5e5] placeholder-[#555] focus:outline-none focus:border-orange-500 transition-colors"
+               class="w-full rounded-lg bg-white border border-[#E3E3E3] px-3 py-2 text-sm text-[#262626] placeholder-[#B3B3B3] focus:outline-none focus:border-orange-500 transition-colors"
                placeholder="email@exemplo.com" />
       </div>
       <div>
-        <label class="block text-xs font-medium text-[#888] mb-1 uppercase tracking-wide">Senha</label>
+        <label class="block text-xs font-medium text-[#6E6E6E] mb-1 uppercase tracking-wide">Senha</label>
         <input type="password" name="senha" required minlength="6"
-               class="w-full rounded-lg bg-[#222] border border-[#3a3a3a] px-3 py-2 text-sm text-[#e5e5e5] placeholder-[#555] focus:outline-none focus:border-orange-500 transition-colors"
+               class="w-full rounded-lg bg-white border border-[#E3E3E3] px-3 py-2 text-sm text-[#262626] placeholder-[#B3B3B3] focus:outline-none focus:border-orange-500 transition-colors"
                placeholder="Mínimo 6 caracteres" />
       </div>
       <div>
-        <label class="block text-xs font-medium text-[#888] mb-1 uppercase tracking-wide">Perfil</label>
+        <label class="block text-xs font-medium text-[#6E6E6E] mb-1 uppercase tracking-wide">Perfil</label>
         <select name="role"
-                class="w-full rounded-lg bg-[#222] border border-[#3a3a3a] px-3 py-2 text-sm text-[#e5e5e5] focus:outline-none focus:border-orange-500 transition-colors">
+                class="w-full rounded-lg bg-white border border-[#E3E3E3] px-3 py-2 text-sm text-[#262626] focus:outline-none focus:border-orange-500 transition-colors">
           <option value="user">Usuário</option>
           <option value="admin">Admin</option>
         </select>
@@ -121,15 +121,15 @@
 </div>
 
 <!-- Modal reset senha -->
-<div id="modal-senha" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-  <div class="bg-[#171717] rounded-2xl border border-[#2e2e2e] p-6 w-full max-w-sm mx-4">
-    <h3 class="text-sm font-semibold text-white mb-1">Redefinir Senha</h3>
-    <p class="text-xs text-[#666] mb-4" id="modal-nome-texto"></p>
+<div id="modal-senha" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+  <div class="bg-white rounded-2xl border border-[#E3E3E3] p-6 w-full max-w-sm mx-4">
+    <h3 class="text-sm font-semibold text-[#262626] mb-1">Redefinir Senha</h3>
+    <p class="text-xs text-[#9A9A9A] mb-4" id="modal-nome-texto"></p>
     <form method="post" id="form-reset-senha" class="space-y-4">
       <div>
-        <label class="block text-xs font-medium text-[#888] mb-1 uppercase tracking-wide">Nova Senha</label>
+        <label class="block text-xs font-medium text-[#6E6E6E] mb-1 uppercase tracking-wide">Nova Senha</label>
         <input type="password" name="nova_senha" required minlength="6"
-               class="w-full rounded-lg bg-[#222] border border-[#3a3a3a] px-3 py-2 text-sm text-[#e5e5e5] placeholder-[#555] focus:outline-none focus:border-orange-500 transition-colors"
+               class="w-full rounded-lg bg-white border border-[#E3E3E3] px-3 py-2 text-sm text-[#262626] placeholder-[#B3B3B3] focus:outline-none focus:border-orange-500 transition-colors"
                placeholder="Mínimo 6 caracteres" />
       </div>
       <div class="flex gap-2">
@@ -138,7 +138,7 @@
           Salvar
         </button>
         <button type="button" onclick="fecharModal()"
-                class="flex-1 border border-[#3a3a3a] text-[#888] hover:text-white font-semibold py-2 rounded-lg transition-colors text-sm">
+                class="flex-1 border border-[#E3E3E3] text-[#6E6E6E] hover:text-[#262626] font-semibold py-2 rounded-lg transition-colors text-sm">
           Cancelar
         </button>
       </div>

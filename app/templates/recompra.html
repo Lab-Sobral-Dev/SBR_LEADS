@@ -4,47 +4,47 @@
 {% block content %}
 <div class="space-y-4">
   <div>
-    <h1 class="text-xl font-semibold text-white">Recompra</h1>
-    <p class="text-sm text-[#888]">Quem está dentro ou fora do próprio ritmo de compra (medição até hoje).</p>
+    <h1 class="text-xl font-semibold text-[#262626]">Recompra</h1>
+    <p class="text-sm text-[#6E6E6E]">Quem está dentro ou fora do próprio ritmo de compra (medição até hoje).</p>
   </div>
 
   <!-- Filtros: o FORM dispara no change de qualquer select e envia todos os campos juntos -->
   <form hx-get="/dashboard/recompra" hx-target="#recompra-paineis" hx-swap="innerHTML"
         hx-trigger="change" hx-push-url="true"
-        class="bg-[#171717] rounded-xl border border-[#2e2e2e] p-4 flex flex-wrap gap-3 items-end">
-    <label class="text-xs text-[#888]">Vendedor
+        class="bg-white rounded-xl border border-[#E3E3E3] p-4 flex flex-wrap gap-3 items-end">
+    <label class="text-xs text-[#6E6E6E]">Vendedor
       <select name="vendedor"
-              class="block mt-1 bg-[#222] border border-[#3a3a3a] rounded-lg px-3 py-2 text-sm text-[#ddd]">
+              class="block mt-1 bg-white border border-[#E3E3E3] rounded-lg px-3 py-2 text-sm text-[#262626]">
         <option value="">Todos</option>
         {% for v in opcoes.vendedores %}
         <option value="{{ v }}" {{ 'selected' if filtros.vendedor == v else '' }}>{{ v }}</option>
         {% endfor %}
       </select>
     </label>
-    <label class="text-xs text-[#888]">UF
+    <label class="text-xs text-[#6E6E6E]">UF
       <select name="uf"
-              class="block mt-1 bg-[#222] border border-[#3a3a3a] rounded-lg px-3 py-2 text-sm text-[#ddd]">
+              class="block mt-1 bg-white border border-[#E3E3E3] rounded-lg px-3 py-2 text-sm text-[#262626]">
         <option value="">Todas</option>
         {% for u in opcoes.ufs %}
         <option value="{{ u }}" {{ 'selected' if filtros.uf == u else '' }}>{{ u }}</option>
         {% endfor %}
       </select>
     </label>
-    <label class="text-xs text-[#888]">Cidade
+    <label class="text-xs text-[#6E6E6E]">Cidade
       <select name="cidade"
-              class="block mt-1 min-w-[160px] bg-[#222] border border-[#3a3a3a] rounded-lg px-3 py-2 text-sm text-[#ddd]">
+              class="block mt-1 min-w-[160px] bg-white border border-[#E3E3E3] rounded-lg px-3 py-2 text-sm text-[#262626]">
         <option value="">Todas</option>
         {% for cid in opcoes.cidades %}
         <option value="{{ cid }}" {{ 'selected' if filtros.cidade == cid else '' }}>{{ cid }}</option>
         {% endfor %}
       </select>
     </label>
-    <label class="text-xs text-[#888]">Faixa
+    <label class="text-xs text-[#6E6E6E]">Faixa
       <select name="faixa"
-              class="block mt-1 bg-[#222] border border-[#3a3a3a] rounded-lg px-3 py-2 text-sm text-[#ddd]">
+              class="block mt-1 bg-white border border-[#E3E3E3] rounded-lg px-3 py-2 text-sm text-[#262626]">
         <option value="">Todas</option>
         {% for k in ['atrasado', 'atrasando', 'em_dia', 'sem_padrao'] %}
-        <option value="{{ k }}" {{ 'selected' if filtros.faixa == k else '' }}>{{ faixas[k].emoji }} {{ faixas[k].label }}</option>
+        <option value="{{ k }}" {{ 'selected' if filtros.faixa == k else '' }}>{{ faixas[k].label }}</option>
         {% endfor %}
       </select>
     </label>

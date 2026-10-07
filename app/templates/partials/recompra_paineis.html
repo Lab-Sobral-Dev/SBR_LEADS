@@ -4,19 +4,19 @@
   {% set f = faixas[k] %}
   <div class="{{ f.card }} rounded-xl p-3">
     <div class="{{ f.cor }} text-2xl font-bold">{{ kpis[k] }}</div>
-    <div class="text-[#9ca3af] text-xs">{{ f.emoji }} {{ f.label }}</div>
+    <div class="text-[#6E6E6E] text-xs flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full {{ f.dot }} inline-block"></span>{{ f.label }}</div>
   </div>
   {% endfor %}
-  <div class="bg-[#1f1810] border border-[#4a3a1a] rounded-xl p-3">
-    <div class="text-orange-400 text-2xl font-bold">R$ {{ "{:,.0f}".format(kpis.receita_atrasados).replace(",", ".") }}</div>
-    <div class="text-[#9ca3af] text-xs">Receita dos atrasados</div>
+  <div class="bg-orange-50 border border-orange-200 rounded-xl p-3">
+    <div class="text-orange-700 text-2xl font-bold">R$ {{ "{:,.0f}".format(kpis.receita_atrasados).replace(",", ".") }}</div>
+    <div class="text-[#6E6E6E] text-xs">Receita dos atrasados</div>
   </div>
 </div>
 
 <!-- Tabela -->
-<div class="bg-[#171717] rounded-xl border border-[#2e2e2e] overflow-hidden">
+<div class="bg-white rounded-xl border border-[#E3E3E3] overflow-hidden">
   <table class="w-full text-sm">
-    <thead class="text-[#888] border-b border-[#2e2e2e]">
+    <thead class="text-[#6E6E6E] border-b border-[#E3E3E3]">
       <tr>
         <th class="text-left px-3 py-2 font-medium">Cliente</th>
         <th class="text-left px-3 py-2 font-medium">Vendedor</th>
@@ -30,20 +30,20 @@
     </thead>
     <tbody>
       {% for c in clientes %}
-      <tr class="border-b border-[#1e1e1e] hover:bg-[#1a1a1a]">
-        <td class="px-3 py-2 text-[#ddd]">{{ c.nome }}{% if c.municipio %}<span class="text-[#666] text-xs"> · {{ c.municipio }}/{{ c.uf }}</span>{% endif %}</td>
-        <td class="px-3 py-2 text-[#aaa]">{{ c.vendedor or '—' }}</td>
-        <td class="px-3 py-2 text-right text-[#aaa]">{{ c.ultima_compra.strftime('%d/%m/%y') if c.ultima_compra else '—' }}</td>
-        <td class="px-3 py-2 text-right text-[#aaa]">{{ ('~%.0f d' % c.mediana) if c.mediana is not none else '—' }}</td>
-        <td class="px-3 py-2 text-right text-[#aaa]">{{ c.dias_sem_comprar if c.dias_sem_comprar is not none else '—' }}</td>
+      <tr class="border-b border-[#F0F0F0] hover:bg-[#FAFAFA]">
+        <td class="px-3 py-2 text-[#262626]">{{ c.nome }}{% if c.municipio %}<span class="text-[#9A9A9A] text-xs"> · {{ c.municipio }}/{{ c.uf }}</span>{% endif %}</td>
+        <td class="px-3 py-2 text-[#404040]">{{ c.vendedor or '—' }}</td>
+        <td class="px-3 py-2 text-right text-[#404040]">{{ c.ultima_compra.strftime('%d/%m/%y') if c.ultima_compra else '—' }}</td>
+        <td class="px-3 py-2 text-right text-[#404040]">{{ ('~%.0f d' % c.mediana) if c.mediana is not none else '—' }}</td>
+        <td class="px-3 py-2 text-right text-[#404040]">{{ c.dias_sem_comprar if c.dias_sem_comprar is not none else '—' }}</td>
         <td class="px-3 py-2 text-right font-semibold {{ faixas[c.faixa].cor }}">
           {{ ('%.2f×' % c.indice) if c.indice is not none else '—' }}
         </td>
-        <td class="px-3 py-2 text-right text-[#aaa]">R$ {{ "{:,.0f}".format(c.ticket_medio).replace(",", ".") }}</td>
-        <td class="px-3 py-2 text-center">{{ faixas[c.faixa].emoji }}</td>
+        <td class="px-3 py-2 text-right text-[#404040]">R$ {{ "{:,.0f}".format(c.ticket_medio).replace(",", ".") }}</td>
+        <td class="px-3 py-2 text-center"><span class="w-2 h-2 rounded-full {{ faixas[c.faixa].dot }} inline-block" title="{{ faixas[c.faixa].label }}"></span></td>
       </tr>
       {% else %}
-      <tr><td colspan="8" class="px-3 py-8 text-center text-[#555]">Nenhum cliente para este recorte.</td></tr>
+      <tr><td colspan="8" class="px-3 py-8 text-center text-[#9A9A9A]">Nenhum cliente para este recorte.</td></tr>
       {% endfor %}
     </tbody>
   </table>

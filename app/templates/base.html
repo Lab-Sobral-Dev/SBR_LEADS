@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}SBR Leads{% endblock %}</title>
   {% block head_extra %}{% endblock %}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
 
   <!-- Tailwind CDN: gera CSS dinamicamente, não suporta SRI -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -29,21 +32,23 @@
 
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['Ubuntu', 'system-ui', 'sans-serif'],
+          },
           colors: {
             orange: {
-              400: '#fb923c',
-              500: '#f97316',
-              600: '#ea580c',
+              400: '#FF9A4D',
+              500: '#FB6602',
+              600: '#D95600',
             },
             surface: {
-              900: '#0f0f0f',
-              800: '#171717',
-              700: '#222222',
-              600: '#2e2e2e',
-              500: '#3a3a3a',
+              900: '#F4F4F4',
+              800: '#FFFFFF',
+              700: '#FFFFFF',
+              600: '#E3E3E3',
+              500: '#D9D9D9',
             }
           }
         }
@@ -52,7 +57,7 @@
   </script>
 
   <style>
-    body { background-color: #0f0f0f; color: #e5e5e5; }
+    body { background-color: #F4F4F4; color: #262626; font-family: 'Ubuntu', system-ui, sans-serif; }
 
     /* Protocolo de Acoplamento (gestao-sbr): embutido em iframe esconde a
        identidade local (marca, nome do usuário, "Sair"), mas NÃO a navegação
@@ -64,11 +69,11 @@
     .htmx-indicator { display: none; }
     .htmx-request .htmx-indicator { display: inline-block; }
     .htmx-request.htmx-indicator { display: inline-block; }
-    select option { background: #222; color: #e5e5e5; }
+    select option { background: #fff; color: #262626; }
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #171717; }
-    ::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #f97316; }
+    ::-webkit-scrollbar-track { background: #F4F4F4; }
+    ::-webkit-scrollbar-thumb { background: #D9D9D9; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #FB6602; }
 
     /* Modo expandido do mapa — overlay cobrindo toda a viewport */
     #tabs-container.mapa-expandido {
@@ -79,31 +84,31 @@
     #tabs-container.mapa-expandido #painel-mapa { flex: 1; min-height: 0; display: flex; flex-direction: column; }
     #tabs-container.mapa-expandido #mapa { flex: 1; height: auto !important; }
 
-    /* Tooltip do mapa — tema escuro */
+    /* Tooltip do mapa */
     .leaflet-tooltip.pm-tip {
-      background: #1c1c1c;
-      border: 1px solid #3a3a3a;
-      color: #e5e5e5;
+      background: #FFFFFF;
+      border: 1px solid #E3E3E3;
+      color: #262626;
       border-radius: 10px;
       padding: 7px 12px;
       font-size: 12px;
       line-height: 1.5;
-      box-shadow: 0 4px 20px rgba(0,0,0,.65);
+      box-shadow: 0 4px 20px rgba(0,0,0,.12);
       max-width: 400px;
       white-space: nowrap;
     }
-    .leaflet-tooltip.pm-tip.leaflet-tooltip-top::before    { border-top-color:    #3a3a3a; }
-    .leaflet-tooltip.pm-tip.leaflet-tooltip-bottom::before { border-bottom-color: #3a3a3a; }
-    .leaflet-tooltip.pm-tip.leaflet-tooltip-left::before   { border-left-color:   #3a3a3a; }
-    .leaflet-tooltip.pm-tip.leaflet-tooltip-right::before  { border-right-color:  #3a3a3a; }
+    .leaflet-tooltip.pm-tip.leaflet-tooltip-top::before    { border-top-color:    #E3E3E3; }
+    .leaflet-tooltip.pm-tip.leaflet-tooltip-bottom::before { border-bottom-color: #E3E3E3; }
+    .leaflet-tooltip.pm-tip.leaflet-tooltip-left::before   { border-left-color:   #E3E3E3; }
+    .leaflet-tooltip.pm-tip.leaflet-tooltip-right::before  { border-right-color:  #E3E3E3; }
 
-    /* Cluster do Leaflet — tema laranja, sobrescreve o azul/verde/amarelo padrão */
+    /* Cluster do Leaflet — tema laranja da marca, sobrescreve o azul/verde/amarelo padrão */
     .marker-cluster-pm {
-      background-color: rgba(249, 115, 22, 0.35);
+      background-color: rgba(251, 102, 2, 0.30);
       border-radius: 50%;
     }
     .marker-cluster-pm div {
-      background-color: rgba(249, 115, 22, 0.9);
+      background-color: rgba(251, 102, 2, 0.92);
       width: 30px; height: 30px;
       margin: 5px;
       border-radius: 50%;
@@ -125,20 +130,23 @@
     // Reforço client-side ao gate do middleware (Sec-Fetch-Dest: document) —
     // achado ao vivo num Firefox real que não manda esse header, deixando a
     // tela vazar pra acesso direto. window.self !== window.top não depende
-    // de nenhum header.
-    window.location.replace('https://gestao.laboratoriosobral.com.br/comercial/demandas/leads')
+    // de nenhum header. Localhost fica de fora: é desenvolvimento local, não
+    // acesso direto em produção.
+    if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+      window.location.replace('https://gestao.laboratoriosobral.com.br/comercial/demandas/leads')
+    }
   }
 </script>
 {% if user is defined and user %}
   <div class="flex min-h-screen">
     {% include "partials/sidebar.html" %}
     <div class="flex-1 min-w-0 flex flex-col">
-      <div class="lg:hidden sticky top-0 z-30 bg-[#0f0f0f] border-b border-[#2e2e2e] flex items-center gap-3 px-4 py-3">
+      <div class="lg:hidden sticky top-0 z-30 bg-white border-b border-[#E3E3E3] flex items-center gap-3 px-4 py-3">
         <button type="button" aria-label="Menu"
                 onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')"
-                class="text-[#999] text-xl leading-none">&#9776;</button>
+                class="text-[#6E6E6E] text-xl leading-none">&#9776;</button>
         <span class="oculto-embed text-orange-500 font-black tracking-tight">SBR</span>
-        <span class="oculto-embed text-white font-light tracking-widest">Leads</span>
+        <span class="oculto-embed text-[#262626] font-light tracking-widest">Leads</span>
       </div>
       <main class="flex-1 p-5">
 {% else %}

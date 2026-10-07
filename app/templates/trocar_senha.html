@@ -1,57 +1,57 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SBR Leads — Criar Senha</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
-          colors: {
-            orange: { 500: '#f97316', 600: '#ea580c' }
-          }
+          fontFamily: { sans: ['Ubuntu', 'system-ui', 'sans-serif'] },
+          colors: { orange: { 400: '#FF9A4D', 500: '#FB6602', 600: '#D95600' } }
         }
       }
     }
   </script>
-  <style>body { background-color: #0f0f0f; }</style>
+  <style>body { background-color: #F4F4F4; font-family: 'Ubuntu', system-ui, sans-serif; }</style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
   <div class="w-full max-w-sm">
     <div class="text-center mb-8">
       <div class="flex items-center justify-center gap-2 mb-2">
         <span class="text-orange-500 font-black text-2xl tracking-tight">SBR</span>
-        <span class="text-white font-light text-2xl tracking-widest">Leads</span>
+        <span class="text-[#262626] font-light text-2xl tracking-widest">Leads</span>
       </div>
-      <p class="text-sm text-[#555]">Olá, <span class="text-[#aaa]">{{ user.nome }}</span></p>
+      <p class="text-sm text-[#9A9A9A]">Olá, <span class="text-[#6E6E6E]">{{ user.nome }}</span></p>
     </div>
 
-    <div class="bg-[#171717] rounded-2xl border border-[#2e2e2e] p-8">
+    <div class="bg-white rounded-2xl border border-[#E3E3E3] p-8 shadow-sm">
       <div class="mb-5">
-        <h2 class="text-base font-semibold text-white mb-1">Crie sua senha</h2>
-        <p class="text-xs text-[#666]">Por segurança, você precisa definir uma senha pessoal antes de continuar.</p>
+        <h2 class="text-base font-semibold text-[#262626] mb-1">Crie sua senha</h2>
+        <p class="text-xs text-[#9A9A9A]">Por segurança, você precisa definir uma senha pessoal antes de continuar.</p>
       </div>
 
       {% if erro %}
-      <div class="mb-4 text-sm text-red-400 bg-red-900/20 border border-red-900/40 rounded-lg px-4 py-3">
+      <div class="mb-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3">
         {{ erro }}
       </div>
       {% endif %}
 
       <form method="post" action="/trocar-senha" class="space-y-4">
         <div>
-          <label class="block text-xs font-medium text-[#888] mb-1 uppercase tracking-wide">Nova Senha</label>
+          <label class="block text-xs font-medium text-[#6E6E6E] mb-1 uppercase tracking-wide">Nova Senha</label>
           <input type="password" name="nova_senha" required minlength="6" autofocus
-                 class="w-full rounded-lg bg-[#222] border border-[#3a3a3a] px-3 py-2.5 text-sm text-[#e5e5e5] placeholder-[#555] focus:outline-none focus:border-orange-500 transition-colors"
+                 class="w-full rounded-lg bg-white border border-[#E3E3E3] px-3 py-2.5 text-sm text-[#262626] placeholder-[#B3B3B3] focus:outline-none focus:border-orange-500 transition-colors"
                  placeholder="Mínimo 6 caracteres" />
         </div>
         <div>
-          <label class="block text-xs font-medium text-[#888] mb-1 uppercase tracking-wide">Confirmar Senha</label>
+          <label class="block text-xs font-medium text-[#6E6E6E] mb-1 uppercase tracking-wide">Confirmar Senha</label>
           <input type="password" name="confirmar_senha" required minlength="6"
-                 class="w-full rounded-lg bg-[#222] border border-[#3a3a3a] px-3 py-2.5 text-sm text-[#e5e5e5] placeholder-[#555] focus:outline-none focus:border-orange-500 transition-colors"
+                 class="w-full rounded-lg bg-white border border-[#E3E3E3] px-3 py-2.5 text-sm text-[#262626] placeholder-[#B3B3B3] focus:outline-none focus:border-orange-500 transition-colors"
                  placeholder="Repita a senha" />
         </div>
         <button type="submit"

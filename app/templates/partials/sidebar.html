@@ -1,36 +1,47 @@
 {% set path = request.url.path %}
-{% macro item(href, icon, label, ativo) %}
+{% set ICONES = {
+  'busca': '<svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.3" y2="16.3"/></svg>',
+  'mapa': '<svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.3"/></svg>',
+  'dashboards': '<svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7.5" height="7.5" rx="1.6"/><rect x="13" y="3.5" width="7.5" height="7.5" rx="1.6"/><rect x="3.5" y="13" width="7.5" height="7.5" rx="1.6"/><rect x="13" y="13" width="7.5" height="7.5" rx="1.6"/></svg>',
+  'rotas': '<svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19c4-10 6 6 10-4 2-4 4-4 6-4"/><circle cx="4" cy="19" r="1.5" fill="currentColor" stroke="none"/><circle cx="20" cy="11" r="1.5" fill="currentColor" stroke="none"/></svg>',
+  'usuarios': '<svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.3" r="3"/><path d="M3 20c0-3.4 2.7-5.8 6-5.8s6 2.4 6 5.8"/><circle cx="17.3" cy="9.3" r="2.3"/><path d="M15.7 14.4c2.6.3 4.6 2.4 4.6 5.1"/></svg>',
+  'config': '<svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.4M12 18.6V21M21 12h-2.4M5.4 12H3M18.4 5.6l-1.7 1.7M7.3 16.7l-1.7 1.7M18.4 18.4l-1.7-1.7M7.3 7.3 5.6 5.6"/></svg>',
+} %}
+{% macro item(href, icone, label, ativo) %}
 <a href="{{ href }}"
    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors
-          {% if ativo %}bg-orange-500/12 text-orange-500 font-semibold{% else %}text-[#888] hover:bg-[#1a1a1a] hover:text-[#ccc]{% endif %}">
-  <span class="w-4 text-center">{{ icon }}</span> {{ label }}
+          {% if ativo %}bg-orange-500 text-white font-semibold{% else %}text-[#262626] hover:bg-[#F4F4F4]{% endif %}">
+  <span class="flex-shrink-0">{{ ICONES[icone] | safe }}</span> {{ label }}
 </a>
 {% endmacro %}
 
 <aside id="sidebar"
-       class="fixed lg:static inset-y-0 left-0 z-40 w-56 flex-shrink-0 bg-[#0f0f0f] border-r border-[#2e2e2e]
+       class="fixed lg:static inset-y-0 left-0 z-40 w-60 flex-shrink-0 bg-white border-r border-[#E3E3E3]
               flex flex-col -translate-x-full lg:translate-x-0 transition-transform duration-200">
-  <a href="/inicio" class="oculto-embed flex items-center gap-2 px-4 py-4">
-    <span class="text-orange-500 font-black text-lg tracking-tight">SBR</span>
-    <span class="text-white font-light text-lg tracking-widest">Leads</span>
+  <a href="/" class="oculto-embed flex items-center gap-2.5 px-4 py-4 border-b border-[#F0F0F0]">
+    <span class="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold text-base"
+          style="background:linear-gradient(135deg,#FF9A4D,#FB6602);box-shadow:0 2px 6px rgba(251,102,2,0.35)">S</span>
+    <span class="leading-tight">
+      <span class="block text-base"><span class="text-[#262626] font-bold">SBR</span> <span class="text-[#6E6E6E] font-normal">Leads</span></span>
+      <span class="block text-[10px] text-[#B3B3B3] font-medium tracking-wide">LABORATÓRIO SOBRAL</span>
+    </span>
   </a>
 
-  <nav class="flex-1 px-2 space-y-1 overflow-y-auto">
-    {{ item('/inicio', '🏠', 'Início', path == '/inicio') }}
-    {{ item('/', '🔎', 'Busca de Leads', path == '/') }}
-    {{ item('/mapa', '🗺️', 'Mapa', path == '/mapa') }}
-    {{ item('/dashboards', '📊', 'Dashboards', path.startswith('/dashboard')) }}
-    {{ item('/rotas', '🧭', 'Rotas', path.startswith('/rotas')) }}
-    <div class="h-px bg-[#1e1e1e] my-2 mx-2"></div>
-    <div class="text-[9px] uppercase tracking-wider text-[#444] px-3 py-1">Administração</div>
+  <nav class="flex-1 px-2.5 py-3 space-y-1 overflow-y-auto">
+    {{ item('/', 'busca', 'Busca de Leads', path == '/') }}
+    {{ item('/mapa', 'mapa', 'Mapa', path == '/mapa') }}
+    {{ item('/dashboards', 'dashboards', 'Dashboards', path.startswith('/dashboard')) }}
+    {{ item('/rotas', 'rotas', 'Rotas', path.startswith('/rotas')) }}
+    <div class="h-px bg-[#F0F0F0] my-2 mx-2"></div>
+    <div class="text-[9px] uppercase tracking-wider text-[#B3B3B3] font-bold px-3 py-1">Administração</div>
     {% if user.role == 'admin' %}
-    {{ item('/admin/usuarios', '👥', 'Usuários', path.startswith('/admin')) }}
+    {{ item('/admin/usuarios', 'usuarios', 'Usuários', path.startswith('/admin')) }}
     {% endif %}
-    {{ item('/configuracoes', '⚙️', 'Configurações', path == '/configuracoes') }}
+    {{ item('/configuracoes', 'config', 'Configurações', path == '/configuracoes') }}
   </nav>
 
-  <div class="oculto-embed border-t border-[#1e1e1e] p-3 flex items-center justify-between">
-    <span class="text-xs text-[#777] truncate">{{ user.nome }}</span>
-    <a href="/logout" class="text-xs text-[#555] hover:text-[#999]">Sair</a>
+  <div class="oculto-embed border-t border-[#F0F0F0] p-3.5 flex items-center justify-between">
+    <span class="text-xs text-[#262626] font-medium truncate">{{ user.nome }}</span>
+    <a href="/logout" class="text-xs text-[#9A9A9A] hover:text-[#FB6602]">Sair</a>
   </div>
 </aside>

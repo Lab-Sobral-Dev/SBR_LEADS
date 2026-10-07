@@ -1,8 +1,8 @@
 {% for c in cnaes %}
 <button type="button"
         onclick="selecionarCnae('{{ c.codigo }}', '{{ c.descricao | replace("'", "\\'") }}')"
-        class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-[#2e2e2e] hover:text-orange-500 border border-transparent hover:border-[#3a3a3a] transition-colors">
-  <span class="font-mono text-[#555]">{{ c.codigo }}</span>
-  <span class="ml-1 text-[#aaa]">{{ c.descricao }}</span>
+        class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-[#F4F4F4] hover:text-orange-500 border border-transparent hover:border-[#E3E3E3] transition-colors">
+  <span class="font-mono text-[#9A9A9A]">{{ c.codigo }}</span>
+  <span class="ml-1 text-[#6E6E6E]">{{ c.descricao }}</span>
 </button>
 {% endfor %}

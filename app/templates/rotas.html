@@ -5,8 +5,8 @@
 <div class="space-y-4">
   <div class="flex items-center justify-between">
     <div>
-      <h1 class="text-xl font-semibold text-white">Rotas de visita</h1>
-      <p class="text-sm text-[#888]">Monte e salve rotas de visita por vendedor.</p>
+      <h1 class="text-xl font-semibold text-[#262626]">Rotas de visita</h1>
+      <p class="text-sm text-[#6E6E6E]">Monte e salve rotas de visita por vendedor.</p>
     </div>
     <a href="/rotas/nova"
        class="text-sm px-4 py-2 rounded-lg bg-orange-500 text-white font-semibold hover:bg-orange-600 transition-colors">
@@ -15,9 +15,9 @@
   </div>
 
   {% if rotas %}
-  <div class="bg-[#171717] rounded-xl border border-[#2e2e2e] overflow-hidden">
+  <div class="bg-white rounded-xl border border-[#E3E3E3] overflow-hidden">
     <table class="w-full text-sm">
-      <thead class="text-[#888] border-b border-[#2e2e2e]">
+      <thead class="text-[#6E6E6E] border-b border-[#E3E3E3]">
         <tr>
           <th class="text-left px-4 py-3 font-medium">Nome</th>
           <th class="text-left px-4 py-3 font-medium">Vendedor</th>
@@ -29,16 +29,16 @@
       </thead>
       <tbody>
         {% for r in rotas %}
-        <tr class="border-b border-[#1e1e1e] hover:bg-[#1a1a1a]">
+        <tr class="border-b border-[#F0F0F0] hover:bg-[#FAFAFA]">
           <td class="px-4 py-3"><a href="/rotas/{{ r.id }}" class="text-orange-500 hover:underline">{{ r.nome }}</a></td>
-          <td class="px-4 py-3 text-[#ccc]">{{ r.vendedor }}</td>
-          <td class="px-4 py-3 text-[#ccc]">{{ r.municipio_nome }}/{{ r.uf }}</td>
-          <td class="px-4 py-3 text-right text-[#ccc]">{{ r.n_paradas }}</td>
-          <td class="px-4 py-3 text-right text-[#777]">{{ r.atualizado_em.strftime('%d/%m/%Y') if r.atualizado_em else '—' }}</td>
+          <td class="px-4 py-3 text-[#404040]">{{ r.vendedor }}</td>
+          <td class="px-4 py-3 text-[#404040]">{{ r.municipio_nome }}/{{ r.uf }}</td>
+          <td class="px-4 py-3 text-right text-[#404040]">{{ r.n_paradas }}</td>
+          <td class="px-4 py-3 text-right text-[#6E6E6E]">{{ r.atualizado_em.strftime('%d/%m/%Y') if r.atualizado_em else '—' }}</td>
           <td class="px-4 py-3 text-right">
             <form method="post" action="/rotas/{{ r.id }}/excluir"
                   onsubmit="return confirm('Excluir esta rota?')">
-              <button type="submit" class="text-xs text-[#666] hover:text-red-400">excluir</button>
+              <button type="submit" class="text-xs text-[#6E6E6E] hover:text-red-700">excluir</button>
             </form>
           </td>
         </tr>
@@ -47,8 +47,8 @@
     </table>
   </div>
   {% else %}
-  <div class="bg-[#171717] rounded-xl border border-[#2e2e2e] p-12 text-center text-[#555]">
-    <p class="font-medium text-[#666]">Nenhuma rota salva ainda. Clique em "+ Nova rota" para montar a primeira.</p>
+  <div class="bg-white rounded-xl border border-[#E3E3E3] p-12 text-center text-[#9A9A9A]">
+    <p class="font-medium text-[#9A9A9A]">Nenhuma rota salva ainda. Clique em "+ Nova rota" para montar a primeira.</p>
   </div>
   {% endif %}
 </div>

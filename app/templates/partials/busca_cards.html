@@ -1,20 +1,20 @@
 {% set pct_cli = ((stats_filtro.clientes / stats_filtro.estabelecimentos * 100) | round(1)) if stats_filtro.estabelecimentos > 0 else 0 %}
 {% set pct_pro = ((stats_filtro.prospectos / stats_filtro.estabelecimentos * 100) | round(1)) if stats_filtro.estabelecimentos > 0 else 0 %}
 <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-  <div class="bg-[#171717] rounded-xl border border-[#2e2e2e] p-4 text-center">
+  <div class="bg-white rounded-xl border border-[#E3E3E3] p-4 text-center">
     <div class="text-2xl font-bold text-orange-500">{{ "{:,}".format(stats_filtro.estabelecimentos).replace(",", ".") }}</div>
-    <div class="text-xs text-[#666] mt-0.5 uppercase tracking-wide">estabelecimentos</div>
+    <div class="text-xs text-[#6E6E6E] mt-0.5 uppercase tracking-wide">estabelecimentos</div>
   </div>
-  <div class="bg-[#171717] rounded-xl border border-[#2e2e2e] p-4 text-center">
-    <div class="text-2xl font-bold text-orange-500">{{ "{:,}".format(stats_filtro.empresas).replace(",", ".") }}</div>
-    <div class="text-xs text-[#666] mt-0.5 uppercase tracking-wide">empresas</div>
+  <div class="bg-white rounded-xl border border-[#E3E3E3] p-4 text-center">
+    <div class="text-2xl font-bold text-[#6E6E6E]">{{ "{:,}".format(stats_filtro.empresas).replace(",", ".") }}</div>
+    <div class="text-xs text-[#6E6E6E] mt-0.5 uppercase tracking-wide">empresas</div>
   </div>
-  <div class="bg-[#171717] rounded-xl border border-[#2e2e2e] p-4 text-center">
-    <div class="text-2xl font-bold text-green-400">{{ "{:,}".format(stats_filtro.clientes).replace(",", ".") }}</div>
-    <div class="text-xs text-[#666] mt-0.5 uppercase tracking-wide">clientes {% if pct_cli > 0 %}<span class="text-[#888]/70 ml-1">{{ pct_cli }}%</span>{% endif %}</div>
+  <div class="bg-white rounded-xl border border-[#E3E3E3] p-4 text-center">
+    <div class="text-2xl font-bold text-green-700">{{ "{:,}".format(stats_filtro.clientes).replace(",", ".") }}</div>
+    <div class="text-xs text-[#6E6E6E] mt-0.5 uppercase tracking-wide">clientes {% if pct_cli > 0 %}<span class="text-[#9A9A9A] ml-1">{{ pct_cli }}%</span>{% endif %}</div>
   </div>
-  <div class="bg-[#171717] rounded-xl border border-[#2e2e2e] p-4 text-center">
-    <div class="text-2xl font-bold text-[#aaa]">{{ "{:,}".format(stats_filtro.prospectos).replace(",", ".") }}</div>
-    <div class="text-xs text-[#666] mt-0.5 uppercase tracking-wide">prospectos {% if pct_pro > 0 %}<span class="text-[#888]/70 ml-1">{{ pct_pro }}%</span>{% endif %}</div>
+  <div class="bg-white rounded-xl border border-[#E3E3E3] p-4 text-center">
+    <div class="text-2xl font-bold text-[#595959]">{{ "{:,}".format(stats_filtro.prospectos).replace(",", ".") }}</div>
+    <div class="text-xs text-[#6E6E6E] mt-0.5 uppercase tracking-wide">prospectos {% if pct_pro > 0 %}<span class="text-[#9A9A9A] ml-1">{{ pct_pro }}%</span>{% endif %}</div>
   </div>
 </div>

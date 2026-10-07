@@ -2,15 +2,16 @@
 
 <div class="flex justify-end">
   <a href="/?{{ querystring }}"
-     class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-[#3a3a3a] text-[#aaa] hover:border-orange-500 hover:text-orange-500 transition-colors">
-    📋 Ver lista
+     class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-[#E3E3E3] text-[#595959] hover:border-orange-500 hover:text-orange-500 transition-colors">
+    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1" fill="currentColor" stroke="none"/></svg>
+    Ver lista
   </a>
 </div>
 
-<div id="tabs-container" class="bg-[#171717] rounded-xl border border-[#2e2e2e] overflow-hidden">
-  <div class="border-b border-[#2e2e2e] flex items-center justify-end gap-2 px-3 py-2" id="btns-mapa">
+<div id="tabs-container" class="bg-white rounded-xl border border-[#E3E3E3] overflow-hidden">
+  <div class="border-b border-[#E3E3E3] flex items-center justify-end gap-2 px-3 py-2" id="btns-mapa">
     <button onclick="alternarCamadaMapa()" id="btn-satelite" type="button"
-            class="text-xs px-3 py-1.5 rounded-lg border border-[#3a3a3a] text-[#aaa] hover:border-orange-500 hover:text-orange-500 transition-colors flex items-center gap-1.5"
+            class="text-xs px-3 py-1.5 rounded-lg border border-[#E3E3E3] text-[#595959] hover:border-orange-500 hover:text-orange-500 transition-colors flex items-center gap-1.5"
             title="Alternar entre mapa e satélite">
       <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -19,7 +20,7 @@
       <span id="lbl-satelite">Satélite</span>
     </button>
     <button onclick="alternarMapaExpandido()" id="btn-expandir-mapa" type="button"
-            class="text-xs px-3 py-1.5 rounded-lg border border-[#3a3a3a] text-[#aaa] hover:border-orange-500 hover:text-orange-500 transition-colors flex items-center gap-1.5"
+            class="text-xs px-3 py-1.5 rounded-lg border border-[#E3E3E3] text-[#595959] hover:border-orange-500 hover:text-orange-500 transition-colors flex items-center gap-1.5"
             title="Alternar visualização ampliada (ESC para voltar)">
       <svg id="ico-expandir" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -30,7 +31,7 @@
   </div>
   <div id="painel-mapa">
     {% if total_no_mapa is defined and resultado_total > total_no_mapa %}
-    <div class="bg-[#1a1a1a] text-[#888] text-xs px-4 py-2 border-b border-[#2e2e2e] flex items-center gap-2">
+    <div class="bg-[#FAFAFA] text-[#6E6E6E] text-xs px-4 py-2 border-b border-[#E3E3E3] flex items-center gap-2">
       <svg class="w-3.5 h-3.5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -58,7 +59,7 @@ function _esc(s) {
 }
 
 function _icone(ehCliente) {
-  const cor = ehCliente ? '#f97316' : '#a855f7';
+  const cor = ehCliente ? '#FB6602' : '#a855f7';
   const html = `<div style="background:${cor};width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 4px rgba(0,0,0,.6)"></div>`;
   return L.divIcon({ html, className: 'pm-marker', iconSize: [18, 18], iconAnchor: [9, 9], popupAnchor: [0, -9] });
 }
@@ -232,10 +233,10 @@ window.iniciarMapa = async function() {
     const loc = [lead.municipio, lead.uf].filter(Boolean).join('/');
     const tel = lead.ddd_1 ? '(' + lead.ddd_1 + ') ' + lead.telefone_1 : '';
     const clienteInfo = lead.eh_cliente
-      ? ` <span style="color:#f97316;font-weight:600">✓ Cliente${lead.vendedor ? ' · ' + _esc(lead.vendedor) : ''}</span>` : '';
+      ? ` <span style="color:#FB6602;font-weight:600">✓ Cliente${lead.vendedor ? ' · ' + _esc(lead.vendedor) : ''}</span>` : '';
     const detalhes = [end, loc, tel].filter(Boolean).map(s => _esc(s)).join(' &nbsp;·&nbsp; ');
-    const tip = `<div style="font-weight:600;color:#fff">${_esc(label)}${clienteInfo}</div>`
-      + (detalhes ? `<div style="color:#888;font-size:11px;margin-top:2px">${detalhes}</div>` : '');
+    const tip = `<div style="font-weight:600;color:#262626">${_esc(label)}${clienteInfo}</div>`
+      + (detalhes ? `<div style="color:#6E6E6E;font-size:11px;margin-top:2px">${detalhes}</div>` : '');
     cluster.addLayer(
       L.marker([coords.lat, coords.lon], { icon: _icone(lead.eh_cliente) })
         .bindTooltip(tip, { direction: 'top', offset: [0, -12], className: 'pm-tip' })
